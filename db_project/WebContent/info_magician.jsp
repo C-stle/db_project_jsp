@@ -44,7 +44,7 @@ margin-bottom: 5.8px;
 }
 #div_button {
 	position:relative;
-	left:130px;
+	left: 130px;
 	margin-bottom: 10px;
 }
 
@@ -106,7 +106,11 @@ left:130px;
 	} catch (SQLException e) {
 		
 	} finally {
-		
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 %>
 
@@ -132,9 +136,9 @@ left:130px;
 		<div id="div_text_margin"><label>마나량</label></div>
 		<div id="div_text_margin"><label>소지금</label></div>
 	</div>
-	<form action="info_edit.jsp" method ="post">
+	<form action="info_magician_db.jsp" method ="post">
 		<div id="div_input">
-			<div id="div_input_margin"><input name="id" type="text" value='<%=id %>'required=""></div>
+			<div id="div_input_margin"><input name="id" type="text" value='<%=id %>' disabled></div>
 			<div id="div_input_margin"><input name="password" type="text" value='<%=password %>' required=""></div>
 			<div id="div_input_margin"><input name="name" type="text" value='<%=name %>' required=""></div>
 			<div id="div_input_margin"><input name="age" type="number" min='1' value='<%=age %>' required=""></div>

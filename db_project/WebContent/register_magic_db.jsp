@@ -156,7 +156,11 @@ right: 10px;
 		<%
 			
 		} finally {
-			
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	%>
 	

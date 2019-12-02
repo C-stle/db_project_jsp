@@ -74,7 +74,11 @@
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	%>
 	

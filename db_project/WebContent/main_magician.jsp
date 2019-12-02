@@ -47,5 +47,8 @@ margin_bottom: 3px;
 	<div>
 		<input type="button" value="창조 마법 거래내역 확인" onclick="location.href='register_material.jsp'">
 	</div>
+	<div>
+		<input type="button" value="회원 탈퇴" onclick="location.href='register_material.jsp'">
+	</div>
 </body>
 </html>

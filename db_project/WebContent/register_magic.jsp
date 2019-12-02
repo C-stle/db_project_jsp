@@ -82,7 +82,7 @@ margin-bottom: 5.8px;
 		<input type="button" value="Logout" onclick="location.href='login.jsp'">
 	</div>
 	<h1>마법 등록</h1>
-	<p>마법 정보 입력
+	<p>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;마법 정보 입력
 		<input type="button" value="재료 추가" onclick="addForm()">
 		<input type="button" value="재료 삭제" onclick="delForm()">
 	<form action="register_magic_db.jsp" method ="post">
