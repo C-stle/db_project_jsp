@@ -13,7 +13,7 @@ right: 10px;
 }
 
 #div_button{
-margin_bottom: 10px;
+margin_bottom: 3px;
 }
 
 </style>
@@ -22,7 +22,6 @@ margin_bottom: 10px;
 	
 <%
 	String id = (String)session.getAttribute("id");
-	String url = request.getHeader("referer");
 	// 재료 등록, 마법 등록, 본인 정보 확인/수정, 본인이 창조한 마법 확인/수정
 %>
 
@@ -34,13 +33,13 @@ margin_bottom: 10px;
 		<input type="button" value="Logout" onclick="location.href='login.jsp'">
 	</div>
 	<div>
-		<input type="button" value="재료  등록" onclick="location.href='register_material.jsp'">
+		<input type="button" value="재료 등록" onclick="location.href='register_material.jsp'">
 	</div>
 	<div>
 		<input type="button" value="마법 등록" onclick="location.href='register_magic.jsp'">
 	</div>
 	<div>
-		<input type="button" value="본인 정보 확인" onclick="location.href='register_material.jsp'">
+		<input type="button" value="본인 정보 확인" onclick="location.href='info_magician.jsp'">
 	</div>
 	<div>
 		<input type="button" value="창조 마법 확인" onclick="location.href='register_material.jsp'">

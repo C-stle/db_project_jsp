@@ -9,29 +9,32 @@
 #div_text {
 	position:relative;
 	height: auto;
-	text-align:rigth;
+	weight:auto;
 	left:50px;
 	float: left;
-	margin: 5px;
+	margin-right: 3px;
+}
+
+#div_text_margin {
+weight: auto;
+height: 21px;
+text-align: right;
+margin-right: 10px;
+margin-top:3px;
+margin-bottom: 5.8px;
 }
 
 #div_input {
 	position:relative;
 	left:50px;
-	weight: 350px;
-	margin-right: 50px;
 }
-
-#div_text_margin {
-height: 23.5px;
-margin-right: 3px;
-text-align:right;
+#div_input_margin {
+	margin-bottom: 3px;
 }
-
 #div_button {
-position:relative;
-top:10px;
-left:50px;
+	position:relative;
+	left:130px;
+	margin-bottom: 10px;
 }
 
 </style>
@@ -53,17 +56,18 @@ left:50px;
 		</div>
 		
 		<div id="div_input">
-			<div><input name="id" type="text" required=""></div>
-			<div><input name="password" type="text" required=""></div>
-			<div><input name="name" type="text" required=""></div>
-			<div><input name="age" type="number" min='1' required=""></div>
-			<div><input name="species" type="text" required=""></div>
-			<div><input name="country" type="text" required=""></div>
-			<div><input name="job" type="text" required=""></div>
-			<div><input name="class" type="number" min='1' max='9' value='1'></div>
-			<div><input name="attribute" type="text" required=""></div>
-			<div><input name="mana" type="number" min='100' value='100'></div>
+			<div id="div_input_margin"><input name="id" type="text" required=""></div>
+			<div id="div_input_margin"><input name="password" type="text" required=""></div>
+			<div id="div_input_margin"><input name="name" type="text" required=""></div>
+			<div id="div_input_margin"><input name="age" type="number" min='1' required=""></div>
+			<div id="div_input_margin"><input name="species" type="text" required=""></div>
+			<div id="div_input_margin"><input name="country" type="text" required=""></div>
+			<div id="div_input_margin"><input name="job" type="text" required=""></div>
+			<div id="div_input_margin"><input name="class" type="number" min='1' max='9' value='1'></div>
+			<div id="div_input_margin"><input name="attribute" type="text" required=""></div>
+			<div id="div_input_margin"><input name="mana" type="number" min='100' value='100'></div>
 		</div>
+		<BR>
 		<div id="div_button">
 			<input type="submit" value="등록">
 			<input type="button" value="돌아가기" onclick="location.href='login.jsp'">
