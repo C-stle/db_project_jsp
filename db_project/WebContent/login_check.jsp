@@ -21,7 +21,7 @@
 			String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 			String dbUser = "root";
 			String dbPass = "maria12";
-			String selectMagician = "select Magician_ID, Magician_Password, Magician_Class from magician;";
+			String selectMagician = "select Magician_ID, Magician_Password, Magician_Class, Magician_Attribute from magician;";
 			String selectMagicStore = "select MagicStore_ID, MagicStore_Password, License_Class from magicstore;";
 			String selectCustomer = "select Customer_ID, Customer_Password from customer;";
 
@@ -49,6 +49,7 @@
 						checkID = 0;
 						if (kind.equals("Magician")) {
 							session.setAttribute("class",result.getString(3));
+							session.setAttribute("attribute", result.getString(4));
 							redirect = "main_magician.jsp";
 						} else if (kind.equals("MagciStore")) {
 							session.setAttribute("class",result.getString(3));

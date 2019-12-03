@@ -17,23 +17,12 @@ top: 10px;
 right: 10px;
 }
 
-#div_button {
-	position:relative;
-	left:50px;
-	margin-bottom: 10px;
-}
-
-#div_name{
-position:relative;
-left:127px;
-}
-
 </style>
 </head>
 <body>
 	
 <%
-	String id = (String)session.getAttribute("id");
+	String id = request.getParameter("id");
 	String password = request.getParameter("password");
 	String name = request.getParameter("name");
 	String age = request.getParameter("age");
@@ -44,6 +33,7 @@ left:127px;
 	String attribute = request.getParameter("attribute");
 	String mana = request.getParameter("mana");
 	String money = request.getParameter("money");
+	String prev_id = (String)session.getAttribute("id");
 	
 	String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 	String dbUser = "root";
@@ -52,6 +42,7 @@ left:127px;
 	ResultSet result = null;
 	Statement stmt = null;
 	Connection conn = null;
+	ResultSet resultID = null;
 	
 	try {
 		String driver = "org.mariadb.jdbc.Driver";
@@ -62,20 +53,38 @@ left:127px;
 		}
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
-		
-		String update_magician = 
-				"update magician set Magician_Password = '" + password + "', Magician_Name = '" + name + 
-				"', Age = '" + age + "', Species = '" + species + "', Country_Of_Origin = '" + country +
-				"', Job = '" + job + "', Magician_Class = '" + m_class + "', Magician_Attribute = '" + attribute +
-				"', Mana = '" + mana + "', Money = '" + money + "' where Magician_ID = '" + id + "';";
+		String selectMagicianID = "select Magician_ID from Magician;";
+		resultID = stmt.executeQuery(selectMagicianID);
+		int checkID = 1;
+		while(resultID.next()) {
+			if(id.equals(resultID.getString(1))) {
 				
-		stmt.executeQuery(update_magician);
-		%>
-		<h1>수정 완료</h1>
-		<div id="div_button">
+				%>
+				<h1>LoDoS Magician</h1>
+				<p>중복된 ID 입니다.
+				<input type="button" value="돌아가기" onclick="location.href='info_magician.jsp'">
+				<%
+				checkID = 0;
+				break;
+			}
+		}
+		if(checkID == 1) {
+			
+			String updateMagician = "update magician set Magician_ID = '" + id + 
+					"', Magician_Password = '" + password + "', Magician_Name = '" + name + 
+					"', Age = '" + age + "', Species = '" + species + "', Country_Of_Origin = '" + country +
+					"', Job = '" + job + "', Magician_Class = '" + m_class + "', Magician_Attribute = '" + attribute +
+					"', Mana = '" + mana + "', Money = '" + money + "' where Magician_ID = '" + prev_id + "';";
+			session.removeAttribute("id");
+			session.setAttribute("id",id);
+			stmt.executeUpdate(updateMagician);
+			%>
+			<h1>LoDoS Magician</h1>
+			<p>수정 완료
 			<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
-		</div>
-		<%
+
+			<%
+		}
 	} catch (SQLException e) {
 		
 	} finally {
