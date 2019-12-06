@@ -12,43 +12,6 @@
 	background-color: #0000FF;
 	text-align: center;
 }
-
-#div_text {
-	position:relative;
-	height: auto;
-	weight:auto;
-	left:50px;
-	float: left;
-	margin-right: 3px;
-}
-
-#div_text_margin {
-weight: auto;
-height: 21px;
-text-align: right;
-margin-right: 10px;
-margin-top:3px;
-margin-bottom: 5.8px;
-}
-
-#div_input {
-	position:relative;
-	left:50px;
-}
-#div_input_margin {
-	margin-bottom: 3px;
-}
-#div_button {
-	position:relative;
-	left:130px;
-	margin-bottom: 10px;
-}
-
-#div_radio {
-	position:relative;
-	left: 50px;
-	margin-bottom: 10px;
-}
 </style>
 </head>
 <body>
@@ -57,29 +20,36 @@ margin-bottom: 5.8px;
 	</div>
 	<div>
 		<form action="login_check.jsp" method="post">
-			<div id="div_radio">
+			<div>
 				<input type="radio" name="kind" value="Magician" checked>Magician
 				<input type="radio" name="kind" value="MagicStore">MagicStore
 				<input type="radio" name="kind" value="Customer">Customer
 			</div>
-				<div id="div_text">
-					<div id="div_text_margin">
-						<label>아이디</label>
-					</div>
-					<div id="div_text_margin">
-						<label>비밀번호</label>
-					</div>
-				</div>
-				<div id="div_input">
-					<div  id="div_input_margin">
-						<input name="id" type="text" required="">
-					</div>
-					<div  id="div_input_margin">
-						<input name="password" type="password" required="" />
-					</div>
-				</div>
-			<BR>
-			<div id="div_button">
+			<div>
+			아이디 : <input name="id" type="text" required="">
+			</div>
+			<div>
+			비밀번호 : <input name="password" type="password" required="" />
+			</div>
+			<%
+			if(session.getAttribute("kind") == null){
+				%>
+				<BR>
+				<%
+			} else if ((int)session.getAttribute("kind") == 1){
+				%>
+				<p> 등록된 아이디가 없습니다.
+				<%
+				session.removeAttribute("kind");
+			} else if ((int)session.getAttribute("kind") == 2){
+				%>
+				<p> 잘못된 비밀 번호 입니다.
+				<%
+				session.removeAttribute("kind");
+			}
+			
+			%>
+			<div>
 				<input type="submit" value="로그인">
 				<input type="button" value="회원가입" onclick="location.href='register.jsp'">
 			</div>

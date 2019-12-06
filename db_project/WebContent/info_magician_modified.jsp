@@ -6,7 +6,7 @@
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.ResultSet"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR" errorPage="error.jsp"%>
+    pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +19,38 @@ top: 10px;
 right: 10px;
 }
 </style>
+<script type="text/javascript">
+	var count = <%=(int)session.getAttribute("ms_count")%>;
+	var last_check = 0;
+	
+	function addForm(){
+		var addedFormDiv = document.getElementById("addedFormDiv");
+		if(last_check == 0){
+			addedFormDiv.removeChild(document.getElementById("empty"));
+			last_check = 1;
+		}
+		var str = "";
+		count++;
+		str+="소속 상회 " + count + " : <input name='ms_id' type='text' required>";
+		var addedDiv = document.createElement("div");
+		addedDiv.id = "added_"+count;
+		addedDiv.innerHTML  = str;
+		addedFormDiv.appendChild(addedDiv);
+		document.baseForm.count.value=count;
+	}
+
+	function delForm(){
+		var addedFormDiv = document.getElementById("addedFormDiv");
+		if(count>0){
+			var addedDiv = document.getElementById("added_"+(count--));
+			addedFormDiv.removeChild(addedDiv);
+		} else{
+			addedFormDiv.appendChild(addedDiv);
+		}
+		
+	}
+</script>
+
 </head>
 <body>
 
@@ -82,51 +114,56 @@ right: 10px;
 		while(result.next()){
 			ms_id.add(result.getString("MagicStore_ID"));
 		}
-		session.setAttribute("ms_count", ms_id.size());
+		
 %>
 	<h1>LoDos Magician</h1>	
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<p><%=id %> 정보
-	<form action="info_magician_modified.jsp" method ="post" name="main">
+		<input type="button" value="마법 상회 추가" onclick="addForm()">
+		<input type="button" value="마법 상회 삭제" onclick="delForm()">
+	<form action="info_magician_db.jsp" method ="post">
 		<div>
-			<div>아이디 : <%=id %></div>
-			<div>비밀번호 : <%=password %></div>
-			<div>이름 : <%=name %></div>
-			<div>나이 : <%=age %></div>
-			<div>종족 : <%=species %></div>
-			<div>출신지 : <%=country %></div>
-			<div>직업 : <%=job %></div>
-			<div>클래스 : <%=m_class %></div>
-			<div>속성 : <%=attribute %></div>
-			<div>마나량 : <%=mana %></div>
-			<div>소지금 : <%=money %></div>
-			<div id="div_input_ms">
-			<%
+			<div>아이디 : <input name="id" type="text" value='<%=id %>' required=""></div>
+			<div>비밀번호 : <input name="password" type="text" value='<%=password %>' required=""></div>
+			<div>이름 : <input name="name" type="text" value='<%=name %>' required=""></div>
+			<div>나이 : <input name="age" type="number" min='1' value='<%=age %>' required=""></div>
+			<div>종족 : <input name="species" type="text" value='<%=species %>' required=""></div>
+			<div>출신지 : <input name="country" type="text" value='<%=country %>' required=""></div>
+			<div>직업 : <input name="job" type="text" value='<%=job %>' required=""></div>
+			<div>클래스 : <input name="class" type="number" min='1' max='9' value='<%=m_class %>' required=""></div>
+			<div>속성 : <input name="attribute" type="text" value='<%=attribute %>' required=""></div>
+			<div>마나량 : <input name="mana" type="number" min='100' value='<%=mana %>' required=""></div>
+			<div>소지금 : <input name="money" type="number" min='1' value='<%=money %>' required=""></div>
+		</div>
+		<div id="addedFormDiv">
+		<%
 			if(ms_id.isEmpty()) {
-				%><label>소속 상회가 없습니다.</label><%
+				%>
+				<div id="empty"><label>소속 상회가 없습니다.</label></div>
+				<%
 			} else {
-				session.setAttribute("ms_id", ms_id);
-				%><div>소속 마법 상회</div><%
 				for(int i=0;i<ms_id.size();i++) {
 					%>
 					<div id="added_<%=(i+1)%>">
-						- <%=ms_id.get(i)%>
+						소속 상회 <%=(i+1)%> : <input name="ms_id" type="text" value='<%=ms_id.get(i)%>' required="">
 					</div>
 					<%
 				}
 			}
 		%>
 		</div>
-	</div>
-	<BR>
-	<div>
-		<input type="submit" value="수정">
-		<input type="button" value="마법 상회 상세 정보 보기" onclick="location.href='info_magicstore_list.jsp'">
-		<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
-	</div>
+		<div>
+			<input type="hidden" name="count" value="<%=ms_id.size()%>">
+		</div>
+		<BR>
+		<div>
+			<input type="submit" value="수정">
+			<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
+		</div>
 	</form>
+
 	<%	
 	} catch (SQLException e) {
 		
@@ -137,7 +174,11 @@ right: 10px;
 			e.printStackTrace();
 		}
 	}
-	%>
+		
+		
+		%>
 	</div>
+	
+	
 </body>
 </html>

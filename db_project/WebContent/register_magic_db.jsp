@@ -20,8 +20,14 @@ right: 10px;
 </style>
 </head>
 <body>
+	<%
+		String keep_id = (String)session.getAttribute("id");
+		if(keep_id == null || keep_id.equals("")) {
+			%><script>location.replace('login.jsp');</script><%
+		}
+	%>
 	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.href='login.jsp'">
+		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<%
 		String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
@@ -64,7 +70,7 @@ right: 10px;
 			resultID = stmt.executeQuery(selectMagicID);
 			int checkID = 1;
 			int checkMe = 0;
-			while(resultID.next()) {
+			while(resultID.next()) {	// 마법 ID 중복 확인
 				if(id.equals(resultID.getString(1))) {
 					checkID = 0;
 					break;
@@ -81,14 +87,14 @@ right: 10px;
 			}
 			int overlap_count = 0;
 			
-			for (String m_id : material_id) {
+			for (String m_id : material_id) { // 중복 입력 확인
 				for (String c_id : material_id) {
 					if(m_id.equals(c_id)) {
 						overlap_count++;
 					}
 				}
 			}
-			if(checkID == 1 && checkMe == 1) {
+			if(checkID == 1 && checkMe == count) {
 				if(Integer.parseInt(m_class) <= Integer.parseInt(creator_class)) {
 					if(creator_attribute.equals(attribute)) {
 						if(overlap_count == material_id.length) {
@@ -108,7 +114,7 @@ right: 10px;
 							<h1>등록 완료</h1>
 						</div>
 						<div>
-							<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
+							<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
 						</div>
 						<%
 						} else {
@@ -118,7 +124,7 @@ right: 10px;
 							<p>재료를 중복 입력하였습니다.
 							</div>
 							<div>
-								<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+								<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 							</div>
 							<%
 						}
@@ -129,22 +135,29 @@ right: 10px;
 						<p>마법과 창조자의 속성이 일치하지 않습니다.
 						</div>
 						<div>
-							<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+							<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 						</div>
 					<%
 					}
 				} else {
-					Exception classExc = new Exception("class 초과");
-					throw classExc;
+					%>
+						<div>
+							<h1>등록 실패</h1>
+							<p>마법의 클래스가 창조 마법사의 클래스보다 높습니다.
+						</div>
+						<div>
+							<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
+						</div>
+					<%
 				}
-			} else if (checkID == 1 && checkMe == 0) {
+			} else if (checkID == 1 && checkMe == 1) {
 				%>	
 				<div>
 					<h1>등록 실패</h1>
 					<p>등록되지 않은 재료가 있습니다.
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 				</div>
 			<%
 			} else if (checkID == 0 && checkMe == 1) {
@@ -154,7 +167,7 @@ right: 10px;
 					<p>중복된 마법 ID 입니다.
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 				</div>
 			<%
 			} else if (checkID == 0 && checkMe == 0) {
@@ -165,7 +178,7 @@ right: 10px;
 				<p>등록되지 않은 재료 입니다.
 			</div>
 			<div>
-				<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+				<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 			</div>
 			<%
 			}
@@ -176,20 +189,9 @@ right: 10px;
 					<h1>등록 실패</h1>
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('register_magic.jsp')">
 				</div>
 			<%
-		} catch (Exception classExc) {
-			%>
-			<div>
-				<h1>등록 실패</h1>
-				<p>마법의 클래스가 창조 마법사의 클래스보다 높습니다.
-			</div>
-			<div>
-				<input type="button" value="돌아가기" onclick="location.href='register_magic.jsp'">
-			</div>
-		<%
-			
 		} finally {
 			try {
 				conn.close();

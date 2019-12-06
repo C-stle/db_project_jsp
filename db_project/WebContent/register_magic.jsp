@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,11 +43,19 @@ right: 10px;
 </head>
 <body>
 	<%
-		String id = (String)session.getAttribute("id");	
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Cache-Control","no-store");
+		response.setDateHeader("Expires",0L);
+		
+		String keep_id = (String)session.getAttribute("id");
+		if(keep_id == null || keep_id.equals("")) {
+			%><script>location.replace('login.jsp');</script><%
+		}
 	%>
 	
 	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.href='login.jsp'">
+		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	
 	<h1>마법 등록</h1>
@@ -78,9 +86,8 @@ right: 10px;
 		<BR>
 		<div>
 			<input type="submit" value="등록">
-			<input type="button" value="돌아가기" onclick="window.open='main_magician.jsp'">
+			<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
 		</div>
-		<BR>
 	</form>
 </body>
 </html>

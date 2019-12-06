@@ -4,7 +4,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.Statement"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +51,7 @@
 					
 					%>
 					<h1>동일한 ID가 존재합니다.</h1>
-					<input type="button" value="돌아가기" onclick="location.href='register_customer.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('register_customer.jsp')">
 					<%
 					checkID = 0;
 					break;
@@ -63,11 +63,9 @@
 			%>			
 				<div>
 					<h1>등록 완료</h1>
-					<p>SQL 수행문
-					<p><%=insert_customer %>
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.href='login.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('login.jsp')">
 				</div>
 			<%
 			}

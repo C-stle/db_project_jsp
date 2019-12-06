@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,22 +15,28 @@ right: 10px;
 #div_button{
 margin_bottom: 3px;
 }
-
 </style>
 </head>
 <body>
-	
-<%
-	String id = (String)session.getAttribute("id");
-	// 재료 등록, 마법 등록, 본인 정보 확인/수정, 본인이 창조한 마법 확인/수정
-%>
+
+	<%
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Cache-Control","no-store");
+		response.setDateHeader("Expires",0L);
+		
+		String id = (String)session.getAttribute("id");
+		if(id == null || id.equals("")) {
+			%><script>location.replace('login.jsp');</script><%
+		}
+	%>
 
 	<div>
 		<h1>LoDos Magician</h1>
-		<p><%=id %>님 환영합니다.
+		<p><%=id%>님 환영합니다.
 	</div>
 	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.href='login.jsp'">
+		<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 	</div>
 	<div>
 		<input type="button" value="재료 등록" onclick="location.href='register_material.jsp'">

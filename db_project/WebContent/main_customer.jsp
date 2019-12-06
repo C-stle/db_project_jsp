@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>

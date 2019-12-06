@@ -4,7 +4,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.Statement"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +20,7 @@ right: 10px;
 </head>
 <body>
 	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.href='login.jsp'">
+		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<%
 		String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
@@ -58,7 +58,7 @@ right: 10px;
 					
 					%>
 					<h1>동일한 ID가 존재합니다.</h1>
-					<input type="button" value="돌아가기" onclick="location.href='register_material.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('register_material.jsp')">
 					<%
 					checkID = 0;
 					break;
@@ -73,7 +73,7 @@ right: 10px;
 					<p><%=insert_material %>
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
+					<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
 				</div>
 			<%
 			}

@@ -1,10 +1,11 @@
+<%@page import="com.sun.java.swing.plaf.windows.resources.windows"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
+	pageEncoding="EUC-KR" errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,10 +44,9 @@
 
 			int checkID = 1;
 			while (result.next()) {
-				if (id.equals(result.getString(1))) {
+				if (id.equals(result.getString(1))) {	// id check
 					if (password.equals(result.getString(2))) {
 						session.setAttribute("id", id);
-						checkID = 0;
 						if (kind.equals("Magician")) {
 							session.setAttribute("class",result.getString(3));
 							session.setAttribute("attribute", result.getString(4));
@@ -57,26 +57,25 @@
 						} else {
 							redirect = "main_customer.jsp";
 						}
-						response.sendRedirect(redirect);
+						session.removeAttribute("kind");
+						
+						%>
+						<script>location.replace('<%=redirect%>');</script>
+						<%
 					} else { // id O, pw X
-	%>
-	<div>
-		<h1>비밀 번호가 틀렸습니다.</h1>
-		<input type="button" value="돌아가기" onclick="location.href='login.jsp'">
-	</div>
-	<%
-		checkID = 0;
-						break;
+						session.setAttribute("kind",2);
+						checkID = 0;
+						%>
+						<script>location.replace('login.jsp');</script>
+						<%
 					}
 				}
 			}
-			if (checkID == 1) {
-	%>
-	<div>
-		<h1>존재하지 않는 ID입니다.</h1>
-		<input type="button" value="돌아가기" onclick="location.href='login.jsp'">
-	</div>
-	<%
+			if(checkID == 1) {
+				session.setAttribute("kind",1);
+				%>
+				<script>location.replace('login.jsp');</script>
+				<%
 			}
 		} catch (NumberFormatException e) {
 		%>
