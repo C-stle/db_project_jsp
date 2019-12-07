@@ -21,14 +21,12 @@ right: 10px;
 </style>
 <script type="text/javascript">
 	var count = <%=(int)session.getAttribute("ms_count")%>;
+	
+	
 	var last_check = 0;
 	
 	function addForm(){
 		var addedFormDiv = document.getElementById("addedFormDiv");
-		if(last_check == 0){
-			addedFormDiv.removeChild(document.getElementById("empty"));
-			last_check = 1;
-		}
 		var str = "";
 		count++;
 		str+="소속 상회 " + count + " : <input name='ms_id' type='text' required>";
@@ -53,17 +51,17 @@ right: 10px;
 
 </head>
 <body>
-
 <%
 	response.setHeader("Pragma", "no-cache");
 	response.setHeader("Cache-Control", "no-cache");
 	response.setHeader("Cache-Control","no-store");
 	response.setDateHeader("Expires",0L);
-	
+
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
 		%><script>location.replace('login.jsp');</script><%
 	}
+	
 	String id = (String)session.getAttribute("id");
 	String password = null;
 	String name = null;
@@ -139,18 +137,12 @@ right: 10px;
 		</div>
 		<div id="addedFormDiv">
 		<%
-			if(ms_id.isEmpty()) {
+			for(int i=0;i<ms_id.size();i++) {
 				%>
-				<div id="empty"><label>소속 상회가 없습니다.</label></div>
+				<div id="added_<%=(i+1)%>">
+					소속 상회 <%=(i+1)%> : <input name="ms_id" type="text" value='<%=ms_id.get(i)%>' required="">
+				</div>
 				<%
-			} else {
-				for(int i=0;i<ms_id.size();i++) {
-					%>
-					<div id="added_<%=(i+1)%>">
-						소속 상회 <%=(i+1)%> : <input name="ms_id" type="text" value='<%=ms_id.get(i)%>' required="">
-					</div>
-					<%
-				}
 			}
 		%>
 		</div>

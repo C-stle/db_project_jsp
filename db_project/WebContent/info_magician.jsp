@@ -89,7 +89,7 @@ right: 10px;
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<p><%=id %> 정보
-	<form action="info_magician_modified.jsp" method ="post" name="main">
+	<form action="info_magician_pass.jsp" method ="post" name="main">
 		<div>
 			<div>아이디 : <%=id %></div>
 			<div>비밀번호 : <%=password %></div>
@@ -126,6 +126,8 @@ right: 10px;
 		<input type="button" value="마법 상회 상세 정보 보기" onclick="location.href='info_magicstore_list.jsp'">
 		<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
 	</div>
+	
+	
 	</form>
 	<%	
 	} catch (SQLException e) {

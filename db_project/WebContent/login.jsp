@@ -56,6 +56,11 @@
 		</form>
 	</div>
 
+<%
+	if(session.getAttribute("id") != null){
+		session.removeAttribute("id");
+	}
 
+%>
 </body>
 </html>

@@ -8,7 +8,7 @@
 </head>
 <body>
 <%
-	session.invalidate();
+	session.removeAttribute("id");
 %>
 	<script>location.replace('login.jsp')</script>
 </body>

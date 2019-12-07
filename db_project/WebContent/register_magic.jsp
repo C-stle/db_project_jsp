@@ -43,15 +43,15 @@ right: 10px;
 </head>
 <body>
 	<%
-		response.setHeader("Pragma", "no-cache");
-		response.setHeader("Cache-Control", "no-cache");
-		response.setHeader("Cache-Control","no-store");
-		response.setDateHeader("Expires",0L);
-		
-		String keep_id = (String)session.getAttribute("id");
-		if(keep_id == null || keep_id.equals("")) {
-			%><script>location.replace('login.jsp');</script><%
-		}
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Cache-Control","no-store");
+	response.setDateHeader("Expires",0L);
+	
+	String keep_id = (String)session.getAttribute("id");
+	if(keep_id == null || keep_id.equals("")) {
+		%><script>location.replace('login.jsp');</script><%
+	}
 	%>
 	
 	<div id="div_logout">

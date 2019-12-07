@@ -24,6 +24,11 @@ right: 10px;
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 <%
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Cache-Control","no-store");
+	response.setDateHeader("Expires",0L);
+
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
 		%><script>location.replace('login.jsp');</script><%
@@ -107,6 +112,8 @@ right: 10px;
 			} else {
 				overlap_count = count;
 			}
+		} else {
+			checkMSID = 1;
 		}
 		
 		
@@ -122,10 +129,11 @@ right: 10px;
 					session.setAttribute("id",id);
 				}
 				stmt.executeUpdate(updateMagician);
+				
+				String deleteMSB = "delete from Magician_Belong where Magician_ID = '" + id + "';";
+				stmt.executeUpdate(deleteMSB);
+				
 				if(count != 0) {
-					String deleteMSB = "delete from Magician_Belong where Magician_ID = '" + id + "';";
-					stmt.executeUpdate(deleteMSB);
-					
 					for(String msIDModified : ms_id) {
 						String insertMSB = "insert into Magician_Belong values('" + id +"', '" + msIDModified + "');";
 						stmt.executeUpdate(insertMSB);
@@ -134,7 +142,7 @@ right: 10px;
 				%>
 				<div><h1>수정 완료</h1></div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
+					<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp');">
 				</div>
 				<%
 			} else {
@@ -144,7 +152,7 @@ right: 10px;
 					<p>중복된 마법 상회 ID를 입력하였습니다.
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp')">
+					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
 				</div>
 				<%
 			}
@@ -155,7 +163,7 @@ right: 10px;
 					<p>등록되지 않은 마법 상회 ID가 있습니다.
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp')">
+					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
 				</div>
 			<%
 			
@@ -166,7 +174,7 @@ right: 10px;
 				<p>중복된 마법사 ID 입니다.
 			</div>
 			<div>
-				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp')">
+				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
 			</div>
 		<%
 		} else if (checkID == 0 && checkMSID == 0) {
@@ -177,7 +185,7 @@ right: 10px;
 				<p>등록되지 않은 마법사 상회 ID 입니다.
 			</div>
 			<div>
-				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp')">
+				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
 			</div>
 		<%
 		}
