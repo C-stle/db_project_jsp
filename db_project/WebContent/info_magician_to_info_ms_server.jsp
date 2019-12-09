@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR" errorPage="error.jsp"%>
+    pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,8 +8,10 @@
 </head>
 <body>
 <%
-	session.invalidate();
+	session.setAttribute("ms_id",request.getParameter("ms_id"));
 %>
-	<script>location.replace('login.jsp')</script>
+<script>
+	location.replace("info_magicstore.jsp");
+</script>
 </body>
 </html>

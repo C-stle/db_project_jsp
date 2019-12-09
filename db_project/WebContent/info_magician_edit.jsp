@@ -62,7 +62,7 @@ right: 10px;
 		%><script>location.replace('login.jsp');</script><%
 	}
 	
-	String id = (String)session.getAttribute("id");
+	String id = keep_id;
 	String password = null;
 	String name = null;
 	String age = null;
@@ -152,7 +152,7 @@ right: 10px;
 		<BR>
 		<div>
 			<input type="submit" value="수정">
-			<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
+			<input type="button" value="돌아가기" onclick="location.replace('info_magician.jsp')">
 		</div>
 	</form>
 

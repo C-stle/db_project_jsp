@@ -19,63 +19,65 @@ right: 10px;
 </style>
 </head>
 <body>
+
 <%
-	response.setHeader("Pragma", "no-cache");
-	response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Pragma", "no-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setDateHeader("Expires",0L);
+if(request.getProtocol().equals("HTTP/1.1"))
 	response.setHeader("Cache-Control","no-store");
-	response.setDateHeader("Expires",0L);
-	
-	String keep_id = (String)session.getAttribute("id");
-	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
-	}
-	
-	String idToList = request.getParameter("ms_id");
-	String idToSession = (String)session.getAttribute("id");
-	String id;
-	if(idToList==null) {
-		id = idToSession;
-	} else {
-		id = idToList;
-	}
-	
-	String password = null;
-	String name = null;
-	String address = null;
-	String representative = null;
-	String license_class = null;
-	String money = null;
-	
-	
-	String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
-	String dbUser = "root";
-	String dbPass = "maria12";
-	
-	ResultSet result = null;
-	Statement stmt = null;
-	Connection conn = null;
-	
+
+String keep_id = (String)session.getAttribute("id");
+if(keep_id == null || keep_id.equals("")) {
+	%><script>location.replace('login.jsp');</script><%
+}
+String idToMsID = (String)session.getAttribute("ms_id");
+String idToSession = (String)session.getAttribute("id");
+
+String id;
+if(idToMsID==null) {
+	id = idToSession;
+} else {
+	id = idToMsID;
+}
+
+String password = null;
+String name = null;
+String address = null;
+String representative = null;
+String license_class = null;
+String money = null;
+
+
+String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
+String dbUser = "root";
+String dbPass = "maria12";
+
+ResultSet result = null;
+Statement stmt = null;
+Connection conn = null;
+
+try {
+	String driver = "org.mariadb.jdbc.Driver";
 	try {
-		String driver = "org.mariadb.jdbc.Driver";
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
-		stmt = conn.createStatement();
-		String query = "select * from magicstore where magicstore_id='" + id + "';";
-		result = stmt.executeQuery(query);
-		result.next();
-		password = result.getString("MagicStore_Password");
-		name = result.getString("Company_Name");
-		address = result.getString("Address");
-		representative = result.getString("Representative");
-		license_class = result.getString("License_Class");
-		money = result.getString("Money");
+		Class.forName(driver);
+	} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
+	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+	stmt = conn.createStatement();
+	String query = "select * from magicstore where magicstore_id='" + id + "';";
+	result = stmt.executeQuery(query);
+	result.next();
+	password = result.getString("MagicStore_Password");
+	name = result.getString("Company_Name");
+	address = result.getString("Address");
+	representative = result.getString("Representative");
+	license_class = result.getString("License_Class");
+	money = result.getString("Money");
 		
 %>
-<h1>LoDos Magician</h1>	
+<h1>LoDos Magic Store</h1>	
 <div id="div_logout">
 	<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 </div>
@@ -95,13 +97,13 @@ right: 10px;
 	<div>
 		<input type="submit" value="수정">
 		<%
-		if(idToList==null) {
+		if(idToMsID==null) {
 			%>
-			<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
+			<input type="button" value="돌아가기" onclick="location.href='main_magicstore.jsp'">
 			<%
 		} else {
 			%>
-			<input type="button" value="돌아가기" onclick="location.href='info_magicstore_list.jsp'">
+			<input type="button" value="돌아가기" onclick="location.href='info_magician.jsp'">
 			<%
 		}
 		

@@ -11,10 +11,6 @@ position: absolute;
 top: 10px;
 right: 10px;
 }
-
-#div_button{
-margin_bottom: 3px;
-}
 </style>
 </head>
 <body>
@@ -48,7 +44,7 @@ margin_bottom: 3px;
 		<input type="button" value="본인 정보 확인" onclick="location.href='info_magician.jsp'">
 	</div>
 	<div>
-		<input type="button" value="창조 마법 확인" onclick="location.href='register_material.jsp'">
+		<input type="button" value="창조 마법 확인" onclick="location.href='info_magic.jsp'">
 	</div>
 	<div>
 		<input type="button" value="창조 마법 거래내역 확인" onclick="location.href='register_material.jsp'">

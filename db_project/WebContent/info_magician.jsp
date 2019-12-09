@@ -19,18 +19,27 @@ top: 10px;
 right: 10px;
 }
 </style>
+<script type="text/javascript">
+function onClicked(value){
+	sessionStorage.setItem("ms_id", value);
+	location.href="info_magician_to_info_ms.jsp";
+	
+}
+
+</script>
+
 </head>
 <body>
-
 <%
-	response.setHeader("Pragma", "no-cache");
-	response.setHeader("Cache-Control", "no-cache");
-	response.setHeader("Cache-Control","no-store");
-	response.setDateHeader("Expires",0L);
+response.setHeader("Pragma", "no-cache");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Cache-Control","no-store");
+response.setDateHeader("Expires",0L);
 	
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
+		%><script>location.replace('login.jsp');</script>
+		<%
 	}
 	String id = (String)session.getAttribute("id");
 	String password = null;
@@ -82,53 +91,50 @@ right: 10px;
 		while(result.next()){
 			ms_id.add(result.getString("MagicStore_ID"));
 		}
-		session.setAttribute("ms_count", ms_id.size());
+		session.setAttribute("ms_id_list",ms_id);
+		session.setAttribute("ms_count",ms_id.size());
 %>
 	<h1>LoDos Magician</h1>	
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<p><%=id %> 정보
-	<form action="info_magician_pass.jsp" method ="post" name="main">
-		<div>
-			<div>아이디 : <%=id %></div>
-			<div>비밀번호 : <%=password %></div>
-			<div>이름 : <%=name %></div>
-			<div>나이 : <%=age %></div>
-			<div>종족 : <%=species %></div>
-			<div>출신지 : <%=country %></div>
-			<div>직업 : <%=job %></div>
-			<div>클래스 : <%=m_class %></div>
-			<div>속성 : <%=attribute %></div>
-			<div>마나량 : <%=mana %></div>
-			<div>소지금 : <%=money %></div>
-			<div id="div_input_ms">
-			<%
-			if(ms_id.isEmpty()) {
-				%><label>소속 상회가 없습니다.</label><%
-			} else {
-				session.setAttribute("ms_id", ms_id);
-				%><div>소속 마법 상회</div><%
-				for(int i=0;i<ms_id.size();i++) {
-					%>
-					<div id="added_<%=(i+1)%>">
-						- <%=ms_id.get(i)%>
-					</div>
-					<%
-				}
+	<div>
+		<div>아이디 : <%=id %></div>
+		<div>비밀번호 : <%=password %></div>
+		<div>이름 : <%=name %></div>
+		<div>나이 : <%=age %></div>
+		<div>종족 : <%=species %></div>
+		<div>출신지 : <%=country %></div>
+		<div>직업 : <%=job %></div>
+		<div>클래스 : <%=m_class %></div>
+		<div>속성 : <%=attribute %></div>
+		<div>마나량 : <%=mana %></div>
+		<div>소지금 : <%=money %></div>
+		<div id="div_input_ms">
+		<%
+		if(ms_id.isEmpty()) {
+			%><label>소속 상회가 없습니다.</label><%
+		} else {
+			
+			%><div>소속 마법 상회</div><%
+			for(int i=0;i<ms_id.size();i++) {
+				%>
+				<div id="added_<%=(i+1)%>">
+					- <a href="javascript:void(0);" onclick="onClicked('<%=ms_id.get(i)%>'); return false;"><%=ms_id.get(i)%></a>
+				</div>
+				<%
 			}
-		%>
+		}
+	%>
 		</div>
 	</div>
 	<BR>
 	<div>
-		<input type="submit" value="수정">
-		<input type="button" value="마법 상회 상세 정보 보기" onclick="location.href='info_magicstore_list.jsp'">
+		<input type="button" value="수정" onclick="location.replace('info_magician_edit.jsp');">
 		<input type="button" value="돌아가기" onclick="location.href='main_magician.jsp'">
 	</div>
-	
-	
-	</form>
+
 	<%	
 	} catch (SQLException e) {
 		

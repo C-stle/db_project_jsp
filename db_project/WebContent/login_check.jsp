@@ -36,7 +36,7 @@
 
 			if (kind.equals("Magician")) {
 				result = stmt.executeQuery(selectMagician);
-			} else if (kind.equals("MagciStore")) {
+			} else if (kind.equals("MagicStore")) {
 				result = stmt.executeQuery(selectMagicStore);
 			} else {
 				result = stmt.executeQuery(selectCustomer);
@@ -51,7 +51,7 @@
 							session.setAttribute("class",result.getString(3));
 							session.setAttribute("attribute", result.getString(4));
 							redirect = "main_magician.jsp";
-						} else if (kind.equals("MagciStore")) {
+						} else if (kind.equals("MagicStore")) {
 							session.setAttribute("class",result.getString(3));
 							redirect = "main_magicstore.jsp";
 						} else {
