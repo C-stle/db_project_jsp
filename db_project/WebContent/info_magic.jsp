@@ -22,7 +22,6 @@ var count = 0;
 var kind = "name";
 function filter(){
 	var value, radio, table, cell, i;
-	var test;
 	value = document.getElementById("value").value;
 	table = document.getElementById("table");
 	if(kind == "name"){
@@ -50,7 +49,6 @@ function onchecked(){
 			kind = radio[i].value;
 		}
 	}
-	
 }
 
 
@@ -70,7 +68,7 @@ if(keep_id == null || keep_id.equals("")) {
 }
 %>
 <div>
-	<h1>LoDos Created Magic</h1>
+	<h1>LoDos Magician</h1>
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
@@ -82,15 +80,13 @@ if(keep_id == null || keep_id.equals("")) {
 	<input type="radio" name="kind" id="kind" value="type" onclick="onchecked();">종류
 	<input type="text" id="value" placeholder = "Searching Magic" onkeyup="filter();">
 </div>
-<BR>
-<script type="text/javascript">
-document.getElementById("test").value = kind;
 
-</script>
+<BR>
 <%
 Statement stmt = null;
 Connection conn = null;
-ResultSet result = null;
+ResultSet resultMagic = null;
+ResultSet resultMaterial = null;
 String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 String dbUser = "root";
 String dbPass = "maria12";
@@ -106,7 +102,8 @@ try {
 	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 	stmt = conn.createStatement();
 	String selectMagic = "select * from Magic where Creator_ID = '" + keep_id + "';";
-	result = stmt.executeQuery(selectMagic);
+	
+	resultMagic = stmt.executeQuery(selectMagic);
 	%>
 	<table border="1" width="900" id="table">
 		<tr align="center">
@@ -119,22 +116,42 @@ try {
 			<th>효과량</th>
 			<th>마나량</th>
 			<th>가격</th>
+			<th>사용 재료 (사용량)</th>
 		</tr>
 	<%
-	while(result.next()){
-		String m_id = result.getString(1);
+	while(resultMagic.next()){
+		String m_id = resultMagic.getString(1);
+		String selectMagicUseMaterial = "select Material_ID, Amount_Used from Material_Use where Magic_ID = '" + m_id + "';";
+		resultMaterial = stmt.executeQuery(selectMagicUseMaterial);
 		%>
 		<script>count = count + 1;</script>
 		<tr align="center">
-			<td><%=result.getString(1) %></td>
-			<td><%=result.getString(2) %></td>
-			<td><%=result.getString(3) %></td>
-			<td><%=result.getString(4) %></td>
-			<td><%=result.getString(5) %></td>
-			<td><%=result.getString(6) %></td>
-			<td><%=result.getString(7) %></td>
-			<td><%=result.getString(8) %></td>
-			<td><%=result.getString(9) %></td>
+			<td><%=m_id %></td>
+			<td><%=resultMagic.getString(2) %></td>
+			<td><%=resultMagic.getString(3) %></td>
+			<td><%=resultMagic.getString(4) %></td>
+			<td><%=resultMagic.getString(5) %></td>
+			<td><%=resultMagic.getString(6) %></td>
+			<td><%=resultMagic.getString(7) %></td>
+			<td><%=resultMagic.getString(8) %></td>
+			<td><%=resultMagic.getString(9) %></td>
+			<%
+			int startCheck = 0;
+			while(resultMaterial.next()){
+				if (startCheck == 0){
+					startCheck++;
+				} else {
+					%>
+					<BR>
+					<%
+				}
+				String materialString = resultMaterial.getString(1) + " (" + resultMaterial.getString(2) + ")";
+				%>
+				<td><%=materialString %></td>
+				<%
+			}
+			
+			%>
 		</tr>
 		<%
 	}

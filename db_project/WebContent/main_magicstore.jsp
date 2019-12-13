@@ -35,10 +35,10 @@ if(id == null || id.equals("")) {
 		</div>
 	</div>
 	<div>
-		<input type="button" value="소속 마법사  조회" onclick="location.href='register_material.jsp'">
+		<input type="button" value="소속 마법사  조회" onclick="location.href='search_belong_magician.jsp'">
 	</div>
 	<div>
-		<input type="button" value="재료 재고 등록" onclick="location.href='register_material.jsp'">
+		<input type="button" value="재료 재고 등록" onclick="location.href='search_sell_material.jsp'">
 	</div>
 	<div>
 		<input type="button" value="마법상회 정보 확인" onclick="location.href='register_material.jsp'">

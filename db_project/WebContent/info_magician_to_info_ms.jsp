@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<Form action="info_magician_to_info_ms_server.jsp" method="post" name="mainForm">
+<Form action="info_magician_to_info_ms_db.jsp" method="post" name="mainForm">
 	<input type="hidden" id="ms_id" name="ms_id">
 </Form>
 

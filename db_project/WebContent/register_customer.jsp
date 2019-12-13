@@ -20,7 +20,7 @@
 		<BR>
 		<div>
 			<input type="submit" value="등록">
-			<input type="button" value="돌아가기" onclick="location.href='login.jsp'">
+			<input type="button" value="돌아가기" onclick="location.replace(login.jsp)">
 		</div>
 	</form>
 </body>

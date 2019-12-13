@@ -52,7 +52,7 @@
 							session.setAttribute("attribute", result.getString(4));
 							redirect = "main_magician.jsp";
 						} else if (kind.equals("MagicStore")) {
-							session.setAttribute("class",result.getString(3));
+							session.setAttribute("ms_class",result.getString(3));
 							redirect = "main_magicstore.jsp";
 						} else {
 							redirect = "main_customer.jsp";

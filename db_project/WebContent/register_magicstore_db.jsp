@@ -21,7 +21,7 @@
 		String password = request.getParameter("password");
 		String name = request.getParameter("name");
 		String address = request.getParameter("address");
-		String representative = request.getParameter("representative");
+		String representative = request.getParameter("representatvie");
 		String m_class = request.getParameter("class");
 		
 		String selectMagicStoreID = "select MagicStore_ID from magicstore;";
