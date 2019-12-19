@@ -28,14 +28,13 @@ function filter(){
 		cell = 0;
 	} else if(kind == "name"){
 		cell = 1;
-	} else if (kind == "home") {
+	} else if (kind == "address") {
 		cell = 2;
-	} else if (kind == "type"){
+	} else if (kind == "representative"){
 		cell = 3;
-	} else if (kind == "price"){
+	} else if (kind == "class"){
 		cell = 4;
 	}
-
 	for(i=1;i<=count;i++){
 		if(cell == 4){
 			if(value == ""){
@@ -66,22 +65,20 @@ function onchecked(){
 	}
 }
 
-function onBuyClicked(){
-	var amount, table;
-	amount = document.getElementsByName("amount");
-	table = document.getElementById("table");
-	for(var i = 0;i<amount.length;i++){
-		if(amount[i].value=="0" || amount[i].value=="" || amount[i].value == null){
+function onEditClicked(){
+	var checkbox, table;
+	checkbox = document.getElementsByName("belong");
+	
+	for(var i = 0;i<checkbox.length;i++){
+		if(checkbox[i].checked==true){
 			
-		} else {
 			var addedFormDiv = document.getElementById("addedFormDiv");
 			var str = "";
-			str+="<input name='ma_id' type='hidden' value='"+ amount[i].id + "'>";
-			str+="<input name='ma_amount' type='hidden' value='" + amount[i].value + "'>";
-			str+="<input name='ma_price' type='hidden' value='" + table.rows[i+1].cells[4].innerHTML + "'>";
+			str+="<input name='ms_id' type='hidden' value='"+ checkbox[i].value + "'>";
+			
 			var addedDiv = document.createElement("div");
 			addedDiv.id = "added";
-			addedDiv.innerHTML = str;
+			addedDiv.innerHTML  = str;
 			addedFormDiv.appendChild(addedDiv);
 		}
 	}
@@ -93,41 +90,39 @@ function onBuyClicked(){
 </head>
 <body>
 <%
-// 전체 마법사 목록 표출, 선택 (허가 클래스 조건 체크)
-// 마법사 목록에 대한 검색기능 제공
 response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Cache-Control","no-store");
 response.setDateHeader("Expires",0L);
-String a;
+
 String keep_id = (String)session.getAttribute("id");
 if(keep_id == null || keep_id.equals("")) {
 	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 }
 %>
 <div>
-	<h1>LoDos Magic Store</h1>
+	<h1>LoDos Customer</h1>
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
-	<p><%=keep_id %> 보유 재료 조회
+	<p><%=keep_id %> 거래처 조회
 </div>
 <div>
 	<input type="radio" name="kind" id="kind" value="id" onclick="onchecked();" checked>아이디
 	<input type="radio" name="kind" id="kind" value="name" onclick="onchecked();">이름
-	<input type="radio" name="kind" id="kind" value="home" onclick="onchecked();">원산지
-	<input type="radio" name="kind" id="kind" value="type" onclick="onchecked();">종류
-	<input type="radio" name="kind" id="kind" value="price" onclick="onchecked();">가격
-	<input type="text" id="value" placeholder = "Searching Material" onkeyup="filter();">
-	<input type="button" value="재료 구매" onclick="onBuyClicked();">
-	<input type="button" value="돌아가기" onclick="location.href='main_magicstore.jsp'">
+	<input type="radio" name="kind" id="kind" value="address" onclick="onchecked();">주소
+	<input type="radio" name="kind" id="kind" value="representative" onclick="onchecked();">대표자
+	<input type="radio" name="kind" id="kind" value="class" onclick="onchecked();">거래허가 클래스
+	<input type="text" id="value" placeholder = "Searching Magic Store" onkeyup="filter();">
+	<input type="button" value="거래처 수정" onclick="onEditClicked();">
+<input type="button" value="돌아가기" onclick="location.href='main_customer.jsp'">
 </div>
 <BR>
 <%
 Statement stmt = null;
 Connection conn = null;
-ResultSet resultMaterial = null;
-ResultSet resultSellMT = null;
+ResultSet resultMS = null;
+ResultSet resultAccountMS = null;
 String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 String dbUser = "root";
 String dbPass = "maria12";
@@ -142,41 +137,42 @@ try {
 	}
 	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 	stmt = conn.createStatement();
-	String selectMaterial = "select * from Material";
-	resultMaterial = stmt.executeQuery(selectMaterial);
+	String selectMagician = "select MagicStore_ID, Company_Name, Address, Representative, License_Class from Magicstore";
+	int count = 0;
+	resultMS = stmt.executeQuery(selectMagician);
 	%>
 	<table border="1" width="900" id="table">
 		<tr align="center">
 			<th>아이디</th>
-			<th>이름</th>
-			<th>원산지</th>
-			<th>종류</th>
-			<th>가격</th>
-			<th>보유량</th>
+			<th>상호명</th>
+			<th>주소</th>
+			<th>대표자</th>
+			<th>거래허가 클래스</th>
+			<th>거래처 여부</th>
 		</tr>
 	<%
-	while(resultMaterial.next()){
-		String ma_id = resultMaterial.getString(1);
-		String selectSellMT = "select Inventory_Volume from Material_Sell where MagicStore_ID = '" + keep_id + "' and Material_ID = '" + ma_id + "';";
-		resultSellMT = stmt.executeQuery(selectSellMT);
+	while(resultMS.next()){
+		count++;
+		String ms_id = resultMS.getString(1);
+		String selectAccountMS = "select * from Customer_Account where MagicStore_ID = '" + ms_id + "'and Customer_ID = '" + keep_id + "';";
+		resultAccountMS = stmt.executeQuery(selectAccountMS);
 		%>
 		<script>count = count + 1;</script>
 		<tr align="center">
-			<td><%=ma_id %></td>
-			<td><%=resultMaterial.getString(2) %></td>
-			<td><%=resultMaterial.getString(3) %></td>
-			<td><%=resultMaterial.getString(4) %></td>
-			<td><%=resultMaterial.getString(5) %></td>
+			<td><%=ms_id %></td>
+			<td><%=resultMS.getString(2) %></td>
+			<td><%=resultMS.getString(3) %></td>
+			<td><%=resultMS.getString(4) %></td>
+			<td><%=resultMS.getString(5) %></td>
 		<%
-		
-		if(resultSellMT.next()){
-			%>
-			<td><input type="number" name="amount" id="<%=ma_id %>" value="<%=resultSellMT.getString(1) %>"></td>
-			<%
+		if(resultAccountMS.next()){
+		%>
+			<td><input type="checkbox" name="belong" value="<%=ms_id %>" checked></td>
+		<%		
 		} else {
-			%>
-			 <td><input type="number" name="amount" id="<%=ma_id %>" value="0" min="0"></td>
-			<%
+		%>
+			<td><input type="checkbox" name="belong" value="<%=ms_id %>"></td>
+		<%
 		}
 		%>
 		</tr>
@@ -193,9 +189,10 @@ try {
 }
 %>
 </table>
-<form action="search_sell_material_db.jsp" method="post" id="hideForm">
+<form action="search_magicstore_account_db.jsp" method="post" id="hideForm">
 	<div id="addedFormDiv">
 	</div>
 </form>
+<BR>
 </body>
 </html>

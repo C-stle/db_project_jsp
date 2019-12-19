@@ -13,6 +13,16 @@
 </head>
 <body>
 	<%
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Cache-Control","no-store");
+	response.setDateHeader("Expires",0L);
+	
+	String keep_id = (String)session.getAttribute("id");
+	if(keep_id == null || keep_id.equals("")) {
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
+	}
+	
 		String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 		String dbUser = "root";
 		String dbPass = "maria12";

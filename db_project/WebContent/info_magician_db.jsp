@@ -20,6 +20,7 @@ right: 10px;
 </style>
 </head>
 <body>
+<h1>LoDos Magician</h1>
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
@@ -31,7 +32,7 @@ right: 10px;
 
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	
 	String id = request.getParameter("id");
@@ -45,7 +46,6 @@ right: 10px;
 	String attribute = request.getParameter("attribute");
 	String mana = request.getParameter("mana");
 	String money = request.getParameter("money");
-	String prev_id = (String)session.getAttribute("id");
 	
 	String[] ms_id = request.getParameterValues("ms_id");
 	int count;
@@ -59,10 +59,12 @@ right: 10px;
 	String dbUser = "root";
 	String dbPass = "maria12";
 	
-	ResultSet result = null;
+	
 	Statement stmt = null;
 	Connection conn = null;
+	ResultSet result = null;
 	ResultSet resultID = null;
+	ResultSet resultMSClass = null;
 	
 	try {
 		String driver = "org.mariadb.jdbc.Driver";
@@ -74,7 +76,7 @@ right: 10px;
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
 		int checkID = 1;
-		if(!id.equals(prev_id)){	// 마법사 ID 중복 입력 확인
+		if(!id.equals(keep_id)){	// 마법사 ID 중복 입력 확인
 			String selectMagicianID = "select Magician_ID from Magician;";
 			resultID = stmt.executeQuery(selectMagicianID);
 			checkID = 1;
@@ -115,77 +117,107 @@ right: 10px;
 		} else {
 			checkMSID = 1;
 		}
-		
-		
-		if(checkID == 1 && checkMSID == 1) {
-			if(overlap_count == count) {
-				String updateMagician = "update magician set Magician_ID = '" + id + 
-						"', Magician_Password = '" + password + "', Magician_Name = '" + name + 
-						"', Age = '" + age + "', Species = '" + species + "', Country_Of_Origin = '" + country +
-						"', Job = '" + job + "', Magician_Class = '" + m_class + "', Magician_Attribute = '" + attribute +
-						"', Mana = '" + mana + "', Money = '" + money + "' where Magician_ID = '" + prev_id + "';";
-				if(!id.equals(prev_id)) {
-					session.removeAttribute("id");
-					session.setAttribute("id",id);
-				}
-				stmt.executeUpdate(updateMagician);
-				
-				String deleteMSB = "delete from Magician_Belong where Magician_ID = '" + id + "';";
-				stmt.executeUpdate(deleteMSB);
-				
-				if(count != 0) {
-					for(String msIDModified : ms_id) {
-						String insertMSB = "insert into Magician_Belong values('" + id +"', '" + msIDModified + "');";
-						stmt.executeUpdate(insertMSB);
+		int m_class_int = Integer.parseInt(m_class);
+		int checkClass = 1;
+		for (int i=0; i<count;i++){
+			String selectMSClass = "select License_Class from MagicStore where MagicStore_ID = '" + ms_id[i] + "';";
+			resultMSClass = stmt.executeQuery(selectMSClass);
+			resultMSClass.next();
+			checkClass = Integer.parseInt(resultMSClass.getString(1));
+			if(m_class_int > checkClass){
+				checkClass = 0;
+				break;
+			}
+		}
+		if(checkID == 1) {
+			if(checkMSID == 1) {
+				if(overlap_count == count) {
+					if(checkClass > 0) {
+						String updateMagician = "update magician set Magician_ID = '" + id + 
+								"', Magician_Password = '" + password + "', Magician_Name = '" + name + 
+								"', Age = '" + age + "', Species = '" + species + "', Country_Of_Origin = '" + country +
+								"', Job = '" + job + "', Magician_Class = '" + m_class + "', Magician_Attribute = '" + attribute +
+								"', Mana = '" + mana + "', Money = '" + money + "' where Magician_ID = '" + keep_id + "';";
+						if(!id.equals(keep_id)) {
+							session.removeAttribute("id");
+							session.setAttribute("id",id);
+						}
+						session.removeAttribute("class");
+						session.removeAttribute("attribute");
+						session.setAttribute("class",m_class);
+						session.setAttribute("attribute",attribute);
+						
+						stmt.executeUpdate(updateMagician);
+						
+						String deleteMSB = "delete from Magician_Belong where Magician_ID = '" + id + "';";
+						stmt.executeUpdate(deleteMSB);
+						
+						if(count != 0) {
+							for(String msIDModified : ms_id) {
+								String insertMSB = "insert into Magician_Belong values('" + id +"', '" + msIDModified + "');";
+								stmt.executeUpdate(insertMSB);
+							}
+						}
+						%>
+						<div><p>정보 수정 완료</div>
+						<div>
+							<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp');">
+						</div>
+						<%
 					}
+					else { // 입력한 클래스가 소속 상회의 거래허가 클래스를 초과하는 경우
+						%>
+						<div>
+							<p>등록 실패
+							<p>- 입력한 클래스가 소속 마법 상회의 거래허가 클래스를 초과하였습니다.
+							<p>- 마법 상회 소속을 해제하고 다시 시도하세요.
+						</div>
+						<div>
+							<input type="button" value="돌아가기" onclick="location.replace('info_magician_edit.jsp');">
+						</div>
+						<%
+					}
+				} else {
+					%>
+					<div>
+						<p>등록 실패
+						<p>- 중복된 마법 상회 ID를 입력하였습니다.
+					</div>
+					<div>
+						<input type="button" value="돌아가기" onclick="location.replace('info_magician_edit.jsp');">
+					</div>
+					<%
 				}
-				%>
-				<div><h1>수정 완료</h1></div>
-				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp');">
-				</div>
-				<%
 			} else {
 				%>
 				<div>
-					<h1>등록 실패</h1>
-					<p>중복된 마법 상회 ID를 입력하였습니다.
+					<p>등록 실패
+					<p>- 등록되지 않은 마법 상회 ID가 있습니다.
 				</div>
 				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
+					<input type="button" value="돌아가기" onclick="location.replace('info_magician_edit.jsp');">
 				</div>
 				<%
 			}
-		} else if (checkID == 1 && checkMSID == 0) {
-			%>	
-				<div>
-					<h1>등록 실패</h1>
-					<p>등록되지 않은 마법 상회 ID가 있습니다.
-				</div>
-				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
-				</div>
-			<%
-			
 		} else if (checkID == 0 && checkMSID == 1) {
 			%>			
 			<div>
-				<h1>등록 실패</h1>
-				<p>중복된 마법사 ID 입니다.
+				<p>등록 실패
+				<p>- 중복된 마법사 ID 입니다.
 			</div>
 			<div>
-				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
+				<input type="button" value="돌아가기" onclick="location.replace('info_magician_edit.jsp');">
 			</div>
 		<%
 		} else if (checkID == 0 && checkMSID == 0) {
 			%>
 			<div>
-				<h1>등록 실패</h1>
-				<p>중복된 마법사 ID 입니다.
-				<p>등록되지 않은 마법사 상회 ID 입니다.
+				<p>등록 실패
+				<p>- 중복된 마법사 ID 입니다.
+				<p>- 등록되지 않은 마법사 상회 ID 입니다.
 			</div>
 			<div>
-				<input type="button" value="돌아가기" onclick="location.replace('info_magician_modified.jsp');">
+				<input type="button" value="돌아가기" onclick="location.replace('info_magician_edit.jsp');">
 			</div>
 		<%
 		}

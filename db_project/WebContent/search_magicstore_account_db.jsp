@@ -30,7 +30,7 @@ if(keep_id == null || keep_id.equals("")) {
 	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 }
 
-String [] magician_id = request.getParameterValues("m_id");
+String [] magicstore_id = request.getParameterValues("ms_id");
 
 Statement stmt = null;
 Connection conn = null;
@@ -48,11 +48,11 @@ try {
 	}
 	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 	stmt = conn.createStatement();
-	String deleteAll = "delete from Magician_Belong where MagicStore_ID = '" + keep_id + "';";
+	String deleteAll = "delete from Customer_Account where Customer_ID = '" + keep_id + "';";
 	stmt.executeUpdate(deleteAll);
-	if(magician_id!=null){
-		for (String m_id : magician_id){
-			String insertBelong = "insert into Magician_Belong values ('" + m_id + "', '" + keep_id + "');";
+	if(magicstore_id!=null){
+		for (String ms_id : magicstore_id){
+			String insertBelong = "insert into Customer_Account values ('" + keep_id + "', '" + ms_id + "');";
 			stmt.executeUpdate(insertBelong);
 		}
 	}
@@ -68,14 +68,14 @@ try {
 }
 %>
 <div>
-	<h1>LoDos Magic Store</h1>
-	<p>소속 수정 완료
+	<h1>LoDos Customer</h1>
+	<p>거래처 수정 완료
 </div>
 <div id="div_logout">
 	<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 </div>
 <div>
-	<input type="button" value="돌아가기" onclick="location.replace('main_magicstore.jsp')"> 
+	<input type="button" value="돌아가기" onclick="location.replace('main_customer.jsp')"> 
 </div>
 </body>
 </html>

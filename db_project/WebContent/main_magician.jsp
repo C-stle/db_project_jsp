@@ -23,7 +23,7 @@ right: 10px;
 		
 		String id = (String)session.getAttribute("id");
 		if(id == null || id.equals("")) {
-			%><script>location.replace('login.jsp');</script><%
+			%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 		}
 	%>
 

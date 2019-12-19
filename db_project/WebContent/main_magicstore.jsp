@@ -21,15 +21,15 @@ response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Cache-Control","no-store");
 response.setDateHeader("Expires",0L);
 
-String id = (String)session.getAttribute("id");
-if(id == null || id.equals("")) {
-	%><script>location.replace('login.jsp');</script><%
+String keep_id = (String)session.getAttribute("id");
+if(keep_id == null || keep_id.equals("")) {
+	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 }
 %>
 
 	<div>
-		<h1>LoDos MagicStore</h1>
-		<p><%=id %>님 환영합니다.
+		<h1>LoDos Magic Store</h1>
+		<p><%=keep_id %>님 환영합니다.
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 		</div>
@@ -41,7 +41,7 @@ if(id == null || id.equals("")) {
 		<input type="button" value="재료 재고 등록" onclick="location.href='search_sell_material.jsp'">
 	</div>
 	<div>
-		<input type="button" value="마법상회 정보 확인" onclick="location.href='register_material.jsp'">
+		<input type="button" value="마법상회 정보 확인" onclick="location.href='info_magicstore.jsp'">
 	</div>
 </body>
 </html>

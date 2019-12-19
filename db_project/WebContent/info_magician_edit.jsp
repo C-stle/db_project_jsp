@@ -21,8 +21,7 @@ right: 10px;
 </style>
 <script type="text/javascript">
 	var count = <%=(int)session.getAttribute("ms_count")%>;
-	
-	
+
 	var last_check = 0;
 	
 	function addForm(){
@@ -59,7 +58,7 @@ right: 10px;
 
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	
 	String id = keep_id;
@@ -133,7 +132,7 @@ right: 10px;
 			<div>클래스 : <input name="class" type="number" min='1' max='9' value='<%=m_class %>' required=""></div>
 			<div>속성 : <input name="attribute" type="text" value='<%=attribute %>' required=""></div>
 			<div>마나량 : <input name="mana" type="number" min='100' value='<%=mana %>' required=""></div>
-			<div>소지금 : <input name="money" type="number" min='1' value='<%=money %>' required=""></div>
+			<div>소지금 : <input name="money" type="number" min='0' value='<%=money %>' required=""></div>
 		</div>
 		<div id="addedFormDiv">
 		<%

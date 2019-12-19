@@ -1,8 +1,8 @@
-<%@page import="java.sql.SQLException"%>
-<%@page import="java.sql.DriverManager"%>
-<%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.Connection"%>
 <%@page import="java.sql.Statement"%>
+<%@page import="java.sql.Connection"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.SQLException"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
@@ -29,15 +29,23 @@ String keep_id = (String)session.getAttribute("id");
 if(keep_id == null || keep_id.equals("")) {
 	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 }
-
-String [] magician_id = request.getParameterValues("m_id");
-
+%>
+<div>
+	<h1>LoDos Customer</h1>
+	<div id="div_logout">
+		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
+	</div>
+	<p><%=keep_id %> 거래처 선택
+</div>
+<form action="search_buy_magic.jsp" method="post">
+<%
 Statement stmt = null;
 Connection conn = null;
 ResultSet result = null;
 String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 String dbUser = "root";
 String dbPass = "maria12";
+
 
 try {
 	String driver = "org.mariadb.jdbc.Driver";
@@ -48,17 +56,19 @@ try {
 	}
 	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 	stmt = conn.createStatement();
-	String deleteAll = "delete from Magician_Belong where MagicStore_ID = '" + keep_id + "';";
-	stmt.executeUpdate(deleteAll);
-	if(magician_id!=null){
-		for (String m_id : magician_id){
-			String insertBelong = "insert into Magician_Belong values ('" + m_id + "', '" + keep_id + "');";
-			stmt.executeUpdate(insertBelong);
-		}
+	String select = "select MagicStore_ID from Customer_Account where Customer_ID = '" + keep_id + "';";
+	result = stmt.executeQuery(select);
+	
+	while(result.next()){
+		%>
+		<div>
+			<input type="radio" name="ms_id" value="<%=result.getString(1) %>"> <%=result.getString(1) %>
+		</div>
+		<%
 	}
 	
 } catch(SQLException e){
-	e.printStackTrace();
+	
 } finally {
 	try {
 		conn.close();
@@ -67,15 +77,11 @@ try {
 	}
 }
 %>
+<BR>
 <div>
-	<h1>LoDos Magic Store</h1>
-	<p>소속 수정 완료
+	<input type="submit" value="판매 마법 보기">
+	<input type="button" value="돌아가기" onclick="location.replace('main_customer.jsp');">
 </div>
-<div id="div_logout">
-	<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
-</div>
-<div>
-	<input type="button" value="돌아가기" onclick="location.replace('main_magicstore.jsp')"> 
-</div>
+</form>
 </body>
 </html>

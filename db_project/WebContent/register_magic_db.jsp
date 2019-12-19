@@ -28,7 +28,7 @@ right: 10px;
 	
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	%>
 	<div id="div_logout">

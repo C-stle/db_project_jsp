@@ -21,8 +21,21 @@ right: 10px;
 </style>
 <script type="text/javascript">
 function onClicked(value){
-	sessionStorage.setItem("ms_id", value);
-	location.href="info_magician_to_info_ms.jsp";
+	var addedFormDiv = document.getElementById("addedFormDiv");
+	addedFormDiv.innerHTML="";
+	var str = "";
+	str+="<input name='ms_id' type='hidden' value='"+ value + "'>";
+	
+	var addedDiv = document.createElement("div");
+	addedDiv.id = "added";
+	addedDiv.innerHTML  = str;
+	addedFormDiv.appendChild(addedDiv);
+	
+	var form = document.getElementById("hideForm");
+	window.open('','POP','height=300 width=300 scrollbars=yes');
+	form.action ='popup_magicstore.jsp';
+	form.target = 'POP';
+	form.submit();
 	
 }
 
@@ -38,8 +51,7 @@ response.setDateHeader("Expires",0L);
 	
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script>
-		<%
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	String id = (String)session.getAttribute("id");
 	String password = null;
@@ -89,9 +101,8 @@ response.setDateHeader("Expires",0L);
 		result = stmt.executeQuery(query);
 		List<String> ms_id = new ArrayList<String>();
 		while(result.next()){
-			ms_id.add(result.getString("MagicStore_ID"));
+			ms_id.add(result.getString(1));
 		}
-		session.setAttribute("ms_id_list",ms_id);
 		session.setAttribute("ms_count",ms_id.size());
 %>
 	<h1>LoDos Magician</h1>	
@@ -114,13 +125,13 @@ response.setDateHeader("Expires",0L);
 		<div id="div_input_ms">
 		<%
 		if(ms_id.isEmpty()) {
-			%><label>소속 상회가 없습니다.</label><%
+			%>- 소속 상회가 없습니다.<%
 		} else {
 			
 			%><div>소속 마법 상회</div><%
 			for(int i=0;i<ms_id.size();i++) {
 				%>
-				<div id="added_<%=(i+1)%>">
+				<div>
 					- <a href="javascript:void(0);" onclick="onClicked('<%=ms_id.get(i)%>'); return false;"><%=ms_id.get(i)%></a>
 				</div>
 				<%
@@ -147,5 +158,10 @@ response.setDateHeader("Expires",0L);
 	}
 	%>
 	</div>
+	<form method="post" id="hideForm">
+	<div id="addedFormDiv">
+	</div>
+</form>
+	
 </body>
 </html>

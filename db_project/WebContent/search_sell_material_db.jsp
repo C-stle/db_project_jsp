@@ -20,7 +20,7 @@ right: 10px;
 </style>
 <body>
 <div>
-	<h1>LoDos MagicStore</h1>
+	<h1>LoDos Magic Store</h1>
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
@@ -32,13 +32,21 @@ response.setDateHeader("Expires",0L);
 
 String keep_id = (String)session.getAttribute("id");
 if(keep_id == null || keep_id.equals("")) {
-	%><script>location.replace('login.jsp');</script><%
+	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 }
 
 String [] material_id = request.getParameterValues("ma_id");
 String [] stringAmount = request.getParameterValues("ma_amount");
 String [] stringPrice = request.getParameterValues("ma_price");
-int [] intAmount = new int[stringAmount.length];
+int [] intAmount;
+int count;
+if(stringAmount != null){
+	intAmount = new int[stringAmount.length];
+	count = material_id.length;
+} else {
+	intAmount = new int[0];
+	count = 0;
+}
 
 Statement stmt = null;
 Connection conn = null;
@@ -66,48 +74,65 @@ try {
 	
 	String selectAmount = "select Material_ID, Inventory_Volume from material_sell where MagicStore_ID = '" + keep_id + "';";
 	resultAmount = stmt.executeQuery(selectAmount);
+	int checkInputAmount = 1;
 	while(resultAmount.next()) {
-		for (int i = 0 ; i<material_id.length;i++){
-			if(material_id[i].equals(resultAmount.getString(1))) {
-				int beforeAmount = Integer.parseInt(resultAmount.getString(2)); 
-				int newAmount = Integer.parseInt(stringAmount[i]);
-				if(beforeAmount < newAmount){
-					stringAmount[i] = String.valueOf(newAmount);
-					intAmount[i] = newAmount - beforeAmount;
-				} else if (beforeAmount == newAmount){
-					intAmount[i] = 0;
+		if(checkInputAmount == 1){
+			for (int i = 0 ; i<count;i++){
+				if(material_id[i].equals(resultAmount.getString(1))) {
+					int beforeAmount = Integer.parseInt(resultAmount.getString(2)); 
+					int newAmount = Integer.parseInt(stringAmount[i]);
+					if(beforeAmount < newAmount){
+						stringAmount[i] = String.valueOf(newAmount);
+						intAmount[i] = newAmount - beforeAmount;
+					} else if (beforeAmount == newAmount){
+						intAmount[i] = 0;
+					} else {
+						intAmount[i] = 0;
+						stringAmount[i] = resultAmount.getString(2);
+						checkInputAmount = 0;
+					}
+					break;
 				}
-				break;
 			}
+		} else {
+			break;
 		}
 	}
-	
-	
-	int totalPrice = 0;
-	for (int i = 0 ;i <stringAmount.length;i++){
-		totalPrice = totalPrice + (intAmount[i] * Integer.parseInt(stringPrice[i]));
-	}
-	if(money >= totalPrice) {
-		String deleteAll = "delete from Material_Sell where MagicStore_ID = '" + keep_id + "';";
-		stmt.executeUpdate(deleteAll);
-		
-		for (int i = 0; i < material_id.length;i++) {
-			String insertSell = "insert into Material_Sell values ('" + keep_id + "', '" + material_id[i] + "', " + stringAmount[i] + ");";
-			stmt.executeUpdate(insertSell);
+	if(checkInputAmount==1){
+		int totalPrice = 0;
+		for (int i = 0 ;i <count;i++){
+			totalPrice = totalPrice + (intAmount[i] * Integer.parseInt(stringPrice[i]));
 		}
-		money = money - totalPrice;
-		String updateMoneyMS = "update magicstore set Money = " + money + " where MagicStore_ID = '" + keep_id + "';";
-		stmt.executeUpdate(updateMoneyMS);
-		%>
-		<p>재료 구매 완료
-		</div>
-		<div>
-			<input type="button" value="돌아가기" onclick="location.replace('main_magicstore.jsp')"> 
-		</div>
-		<%
+		if(money >= totalPrice) {
+			String deleteAll = "delete from Material_Sell where MagicStore_ID = '" + keep_id + "';";
+			stmt.executeUpdate(deleteAll);
+			
+			for (int i = 0; i < count;i++) {
+				String insertSell = "insert into Material_Sell values ('" + keep_id + "', '" + material_id[i] + "', " + stringAmount[i] + ");";
+				stmt.executeUpdate(insertSell);
+			}
+			money = money - totalPrice;
+			String updateMoneyMS = "update magicstore set Money = " + money + " where MagicStore_ID = '" + keep_id + "';";
+			stmt.executeUpdate(updateMoneyMS);
+			%>
+			<p>재료 구매 완료
+			</div>
+			<div>
+				<input type="button" value="돌아가기" onclick="location.replace('main_magicstore.jsp')"> 
+			</div>
+			<%
+		} else {
+			%>
+			<p>소지금이 부족합니다.
+			</div>
+			<div>
+				<input type="button" value="돌아가기" onclick="location.replace('search_sell_material.jsp')"> 
+			</div>
+			<%
+		}
 	} else {
 		%>
-		<p>소지금이 부족합니다.
+		<p>소유량보다 적게 입력한 값이 있습니다.
 		</div>
 		<div>
 			<input type="button" value="돌아가기" onclick="location.replace('search_sell_material.jsp')"> 
@@ -119,6 +144,12 @@ try {
 	
 } catch(SQLException e){
 	e.printStackTrace();
+} finally {
+	try {
+		conn.close();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
 }
 %>
 </body>
