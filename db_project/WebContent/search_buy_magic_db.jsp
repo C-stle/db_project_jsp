@@ -58,6 +58,8 @@ String dbUser = "root";
 String dbPass = "maria12";
 
 String customer_attribute = "";
+int totalPrice = 0;
+
 // 마법 가격
 
 // 구매한 마법을 제외하고 총 가격 계산
@@ -86,7 +88,7 @@ try {
 		}
 	}
 	
-	int totalPrice = 0;
+
 	for(int i=0;i<count;i++){
 		totalPrice = totalPrice + Integer.parseInt(magic_price[i]);
 	}
@@ -112,13 +114,14 @@ try {
 				resultM = stmt.executeQuery(query);
 				if(resultM.next()){
 					if(result.getString(2).equals(customer_attribute)){
-						int price = (int)((double)Integer.parseInt(magic_price[i]) * 0.9f);
-						totalPrice = totalPrice - Integer.parseInt(magic_price[i]) + price;
-						magic_price[i] = String.valueOf(price);
+						if(magic_price[i] != "0"){
+							int price = (int)((double)Integer.parseInt(magic_price[i]) * 0.9);
+							totalPrice = totalPrice - Integer.parseInt(magic_price[i]) + price;
+							magic_price[i] = String.valueOf(price);
+						}
 					}
 					int moneyToMS = Integer.parseInt(magic_price[i])/2; // 소수점이 나오는경우 반올림 하게 됨
 					int moneyToM = Integer.parseInt(magic_price[i]) - moneyToMS;
-					
 					query = "select Money from Magicstore where MagicStore_ID = '" + ms_id + "';";
 					resultMS = stmt.executeQuery(query);
 					if(resultMS.next()){
@@ -165,6 +168,7 @@ try {
 %>
 <div>
 	<p>마법 구매 완료
+	<p>총 가격 : <%=totalPrice %>
 </div>
 <div id="div_logout">
 	<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
