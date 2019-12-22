@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -104,11 +104,10 @@ function onBuyClicked(){
 	}
 	%>
 	<div>
-		<h1>LoDos Customer</h1>
+		<h1>판매 재료 조회</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 		</div>
-		<p>판매 재료 조회
 	</div>
 	<div>
 		<input type="radio" name="kind" id="kind" value="id" onclick="onchecked();" checked>아이디
@@ -147,7 +146,7 @@ function onBuyClicked(){
 							+ "where A.MagicStore_ID = '" + ms_id + "' group by A.Material_ID;";
 		resultTrade = stmt.executeQuery(selectMASMT);
 		%>
-		<table border="1" width="900" id="table">
+		<table border="1" width="100%" id="table">
 			<tr align="center">
 				<th>아이디</th>
 				<th>이름</th>
@@ -185,7 +184,7 @@ function onBuyClicked(){
 				<%
 				
 			} while(resultTrade.next());
-			
+			%></table><%
 		} else {
 			%>
 			<p>판매 중인 재료가 없습니다.
@@ -201,7 +200,7 @@ function onBuyClicked(){
 		}
 	}
 	%>
-	</table>
+	
 	<form action="search_buy_material_db.jsp" method="post" id="hideForm">
 		<div id="addedFormDiv">
 		</div>

@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;
@@ -83,19 +83,19 @@ response.setDateHeader("Expires",0L);
 		}
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
-		String query = "select * from magician where magician_id='" + id + "';";
+		String query = "select *, AES_DECRYPT(Magician_Password, Magician_ID) from magician where magician_id='" + id + "';";
 		result = stmt.executeQuery(query);
 		result.next();
-		password = result.getString("Magician_Password");
-		name = result.getString("Magician_Name");
-		age = result.getString("Age");
-		species = result.getString("Species");
-		country = result.getString("Country_Of_Origin");
-		job = result.getString("Job");
-		m_class = result.getString("Magician_Class");
-		attribute = result.getString("Magician_Attribute");
-		mana = result.getString("Mana");
-		money = result.getString("Money");
+		password = result.getString(12);
+		name = result.getString(3);
+		age = result.getString(4);
+		species = result.getString(5);
+		country = result.getString(6);
+		job = result.getString(7);
+		m_class = result.getString(8);
+		attribute = result.getString(9);
+		mana = result.getString(10);
+		money = result.getString(11);
 		
 		query = "select MagicStore_ID from magician_belong where Magician_ID = '" + id + "';";
 		result = stmt.executeQuery(query);
@@ -122,6 +122,7 @@ response.setDateHeader("Expires",0L);
 		<div>속성 : <%=attribute %></div>
 		<div>마나량 : <%=mana %></div>
 		<div>소지금 : <%=money %></div>
+		<BR>
 		<div id="div_input_ms">
 		<%
 		if(ms_id.isEmpty()) {

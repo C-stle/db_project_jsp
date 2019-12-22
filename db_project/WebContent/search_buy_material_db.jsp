@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -64,6 +64,7 @@ right: 10px;
 		String dbUser = "root";
 		String dbPass = "maria12";
 		
+		String str = "재료 구매 실패";
 		
 		try {
 			String driver = "org.mariadb.jdbc.Driver";
@@ -98,67 +99,65 @@ right: 10px;
 						if(beforeAmount == intAmount[i]){ // 보유량과 구매량이 같은 경우
 							intAmount[i] = 0;
 						} else if (beforeAmount > intAmount[i]){
-							%><script>alert('보유량보다 적은 양을 입력한 재료가 있습니다.\n재료 ID = <%=material_id[i]%>, 보유량 = <%=beforeAmount%>, 구매량 = <%=intAmount[i]%>\n구매를 취소하고 거래처 선택으로 돌아갑니다.');location.replace('info_customer_account.jsp')</script><%
+							str = str + "\\n보유량보다 적은 양을 입력한 재료가 있습니다.\\n재료 ID = " + material_id[i] +", 보유량 = " + beforeAmount + ", 구매량 = " + intAmount[i];
 						} else if (beforeAmount < intAmount[i]) {
 							intAmount[i] = intAmount[i] - beforeAmount;
 							sellAmount[i] = resultTrade.getInt(2);
 							if(intAmount[i] > sellAmount[i]){
-								%><script>alert('판매량보다 많은 양을 입력한 재료가 있습니다.\n재료 ID = <%=material_id[i]%>, 판매량 = <%=resultTrade.getInt(2)%>, 구매량 = <%=intAmount[i]%>\n구매를 취소하고 거래처 선택으로 돌아갑니다.');location.replace('info_customer_account.jsp')</script><%
+								str = str + "\\n판매량보다 많은 양을 입력한 재료가 있습니다.\\n재료 ID = " + material_id[i] +", 판매량 = " + resultTrade.getInt(2) + ", 구매량 = " + intAmount[i];
+							} else {
+								checkBuy++;
 							}
-							checkBuy++;
 						}
+						break;
 					}
 				}
-			}
-			if(checkBuy == 0){
-				%><script>alert('구매한 재료가 없습니다.\n거래처 선택 화면으로 돌아갑니다.');location.replace('info_customer_account.jsp')</script><%
 			}
 			int totalPrice = 0;
 			for (int i = 0 ;i <count;i++){
 				totalPrice = totalPrice + (intAmount[i] * Integer.parseInt(stringPrice[i]));
 			}
+			int check = 1;
 			
-			if(customerMoney >= totalPrice){ // 고객 소지금이 충분한 경우, 재료 거래내역 추가, 고객, 마법상회 소지금 변화
-				int sellAmountCheck = 0;	// 보유량과 같은 량을 입력한 경우 확인
+			if(customerMoney < totalPrice){
+				check = 0;
+				str = str + "\\n" + keep_id + "님의 소지금이 부족합니다.\\n총 구매 금액 = " + String.valueOf(totalPrice) + "\\n현재 소지금 = " + String.valueOf(customerMoney);
+			}
+			if(checkBuy == 0){
+				check = 0;
+			}
+			if(totalPrice == 0){
+				check = 0;
+				str = "재료 구매 실패\\n구매한 재료가 없습니다.";
+			}
+			if(check == 1){
 				for(int i = 0; i<count;i++){
-					%><script>alert('intA <%=intAmount[i]%>\n sellA <%=sellAmount[i]%>');</script><%
-					if(intAmount[i] > 0 && sellAmount[i] > intAmount[i]){
-						String insertTrade = "";
-						String updateMASell = "";
-						
-						if(sellAmount[i] > intAmount[i]) {
-							sellAmount[i] = sellAmount[i] - intAmount[i];
-							updateMASell = "update Material_Sell set Amount = " + sellAmount[i] + " where MagicStore_ID = '" + ms_id + "' and Material_ID = '" + material_id[i] + "';";
-						} else if (sellAmount[i] == intAmount[i]){
-							updateMASell = "delete from Material_Sell where MagicStore_ID = '" + ms_id + "' and Material_ID = '" + material_id[i] + "';";
-						}
-						stmt.executeUpdate(updateMASell);
-						%><script>alert('test2');</script><%
-						insertTrade = "insert into material_trade(MagicStore_ID, Customer_ID, Material_ID, Trade_Amount) values('" + ms_id + "', '" + keep_id + "', '" + material_id[i] + "', " + String.valueOf(intAmount[i]) +");";
-						stmt.executeUpdate(insertTrade);
-						%><script>alert('test3');</script><%
-						sellAmountCheck = 1;
+					String insertTrade = "";
+					String updateMASell = "";
+					
+					if(sellAmount[i] > intAmount[i]) {
+						sellAmount[i] = sellAmount[i] - intAmount[i];
+						updateMASell = "update Material_Sell set Amount = " + sellAmount[i] + " where MagicStore_ID = '" + ms_id + "' and Material_ID = '" + material_id[i] + "';";
+					} else if (sellAmount[i] == intAmount[i]){
+						updateMASell = "delete from Material_Sell where MagicStore_ID = '" + ms_id + "' and Material_ID = '" + material_id[i] + "';";
 					}
+					stmt.executeUpdate(updateMASell);
+					insertTrade = "insert into material_trade(MagicStore_ID, Customer_ID, Material_ID, Trade_Amount) values('" + ms_id + "', '" + keep_id + "', '" + material_id[i] + "', " + String.valueOf(intAmount[i]) +");";
+					stmt.executeUpdate(insertTrade);
 				}
-				if(sellAmountCheck == 1){
-					msMoney += totalPrice;
-					customerMoney -= totalPrice;
-					String updateMoney = "update MagicStore set Money = " + String.valueOf(msMoney) + " where MagicStore_ID = '" + ms_id + "';";
-					stmt.executeUpdate(updateMoney);
-					%><script>alert('test4');</script><%
-					updateMoney = "update Customer set Money = " + String.valueOf(customerMoney) + " where Customer_ID = '" + keep_id + "';";
-					stmt.executeUpdate(updateMoney);
-					%><script>alert('test5');</script><%
-					%><script>alert('재료 구매를 완료하였습니다.\n구매 금액 = <%=totalPrice%>\n남은 소지금 = <%=customerMoney%>');location.replace('info_customer_account.jsp');</script><%
-				} else {	// 보유량 재료양과 같은 경우
-					%><script>alert('구매한 재료가 없습니다.');location.replace('info_customer_account.jsp');</script><%
-				}
-			} else { // 고객의 소지금이 부족한 경우
-				%><script>alert('<%=keep_id%> 님의 소지금이 부족합니다.\n구매 금액 = <%=totalPrice%>\n현재 소지금 = <%=customerMoney%>');location.replace('info_customer_account.jsp');</script><%
+				msMoney += totalPrice;
+				customerMoney -= totalPrice;
+				String updateMoney = "update MagicStore set Money = " + String.valueOf(msMoney) + " where MagicStore_ID = '" + ms_id + "';";
+				stmt.executeUpdate(updateMoney);
+				updateMoney = "update Customer set Money = " + String.valueOf(customerMoney) + " where Customer_ID = '" + keep_id + "';";
+				stmt.executeUpdate(updateMoney);
+				str = "재료 구매 완료\\n구매 금액 = " + String.valueOf(totalPrice) + "\\n남은 소지금 = " + String.valueOf(customerMoney);
+				%><script>alert('<%=str%>');location.replace('info_customer_account.jsp');</script><%
+			} else {
+				%><script>alert('<%=str%>');location.replace('info_customer_account.jsp');</script><%
 			}
 		} catch(SQLException e){
 			e.printStackTrace();
-			%><script>alert('test6');</script><%
 		} finally {
 			try {
 				conn.close();

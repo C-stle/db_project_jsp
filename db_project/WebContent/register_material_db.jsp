@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;
@@ -33,70 +33,61 @@ right: 10px;
 		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	
-		String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
-		String dbUser = "root";
-		String dbPass = "maria12";
-		
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String origin = request.getParameter("origin");
-		String type = request.getParameter("type");
-		String price = request.getParameter("price");
-		
-		String selectMagicianID = "select Material_ID from material;";
-		ResultSet resultID = null;
-		
-		String insert_material = 
-				"insert into material values('" + id + "', '" + name + "', '" + origin + "', '" +
-				 type + "', '" + price + "');";
-		Statement stmt = null;
-		Connection conn = null;
-		
+	String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
+	String dbUser = "root";
+	String dbPass = "maria12";
+	
+	String id = request.getParameter("id");
+	String name = request.getParameter("name");
+	String origin = request.getParameter("origin");
+	String type = request.getParameter("type");
+	String price = request.getParameter("price");
+	
+	String selectMagicianID = "select Material_ID from material;";
+	ResultSet resultID = null;
+	
+	String insert_material = 
+			"insert into material values('" + id + "', '" + name + "', '" + origin + "', '" +
+			 type + "', '" + price + "');";
+	Statement stmt = null;
+	Connection conn = null;
+	
+	String str = "";
+	try {
+		String driver = "org.mariadb.jdbc.Driver";
 		try {
-			String driver = "org.mariadb.jdbc.Driver";
-			try {
-				Class.forName(driver);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
-			stmt = conn.createStatement();
-			resultID = stmt.executeQuery(selectMagicianID);
-			int checkID = 1;
-			while(resultID.next()) {
-				if(id.equals(resultID.getString(1))) {
-					
-					%>
-					<h1>동일한 ID가 존재합니다.</h1>
-					<input type="button" value="돌아가기" onclick="location.replace('register_material.jsp')">
-					<%
-					checkID = 0;
-					break;
-				}
-			}
-			if(checkID == 1) {
-				stmt.executeUpdate(insert_material);
-			%>			
-				<div>
-					<h1>등록 완료</h1>
-					<p>SQL 수행문
-					<p><%=insert_material %>
-				</div>
-				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
-				</div>
-			<%
-			}
-		} catch (SQLException e) {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		}
+		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+		stmt = conn.createStatement();
+		resultID = stmt.executeQuery(selectMagicianID);
+		int checkID = 1;
+		while(resultID.next()) {
+			if(id.equals(resultID.getString(1))) {
+				checkID = 0;
+				break;
 			}
 		}
-	%>
+		if(checkID == 1) {
+			stmt.executeUpdate(insert_material);
+			str = "재료 등록 완료";
+			%><script>alert('<%=str%>');location.replace('main_magician.jsp');</script><%
+		} else {
+			str = "재료 등록 실패\\n동일한 ID가 존재합니다.";
+			%><script>alert('<%=str%>');location.replace('register_material.jsp');</script><%
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	} finally {
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+%>
 	
 </body>
 </html>

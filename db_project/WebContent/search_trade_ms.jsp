@@ -265,7 +265,6 @@ function onCClicked(value){
 		} else {
 			%><p>재료 거래 내역이 없습니다.<BR><%
 		}
-		
 	} catch (SQLException e){
 		e.printStackTrace();
 	} finally {

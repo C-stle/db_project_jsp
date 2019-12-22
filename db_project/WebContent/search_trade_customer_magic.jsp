@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -118,8 +118,7 @@ if(keep_id == null || keep_id.equals("")) {
 %>
 
 	<div>
-		<h1>LoDos Customer</h1>
-		<p>마법 거래 내역
+		<h1>마법 거래 내역</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 		</div>
@@ -161,7 +160,7 @@ if(keep_id == null || keep_id.equals("")) {
 					<th>마법 거래 번호</th>
 					<th>거래 마법 상회 ID</th>
 					<th>구매 마법 ID</th>
-					<th>부족한 재료 ID / 필요한 재료량</th>
+					<th>필요한 재료 ID / 필요한 재료량</th>
 				</tr>
 			<%
 			List<String> use_ma_id = new ArrayList<String>();
@@ -180,26 +179,25 @@ if(keep_id == null || keep_id.equals("")) {
 				}
 				
 				for (int i = 0;i <use_ma_id.size();i++){
+					need_ma_id.add(use_ma_id.get(i));
 					String selectOwnMA = "select SUM(Trade_Amount) from Material_Trade where Customer_ID = '" + keep_id + "' and Material_ID = '" + use_ma_id.get(i) + "' group by Material_ID;";
 					result = stmt.executeQuery(selectOwnMA);
 					if(!result.next()){
 						checkMA = 0;
 						strMA = strMA + use_ma_id.get(i) + " / " + String.valueOf(use_amount.get(i));
-						need_ma_id.add(use_ma_id.get(i));
 						need_amount.add(use_amount.get(i));
 					} else if (result.getInt(1) < use_amount.get(i)){
 						checkMA = 0;
 						strMA = strMA + use_ma_id.get(i) + " / " + String.valueOf(use_amount.get(i) - result.getInt(1));
-						need_ma_id.add(use_ma_id.get(i));
 						need_amount.add(use_amount.get(i) - result.getInt(1));
 					} else {
 						checkMA = 1;
+						need_amount.add(0);
 					}
 					if(i < use_ma_id.size() - 1){
 						strMA = strMA + "\\n";
 					}
 				}
-				
 				if(checkMA == 1){
 					strMA = "X";
 				}
@@ -210,18 +208,17 @@ if(keep_id == null || keep_id.equals("")) {
 					<td><a href="javascript:void(0);" onclick="onMSClicked('<%=resultTrade.getString(2)%>'); return false;"><%=resultTrade.getString(2) %></a></td>
 					<td><a href="javascript:void(0);" onclick="onMClicked('<%=resultTrade.getString(3)%>'); return false;"><%=resultTrade.getString(3) %></a></td>
 					<td><% 
-							for(int i = 0 ;i<need_ma_id.size();i++){
-								%> <a href="javascript:void(0);" onclick="onMAClicked('<%=need_ma_id.get(i)%>'); return false;"><%=need_ma_id.get(i) %></a> / <%=need_amount.get(i)%><BR><%
-								if(i < need_ma_id.size()-1){
-									%><BR><%
-								}
-							}
+						for(int i = 0 ;i<need_ma_id.size();i++){
+							%> <a href="javascript:void(0);" onclick="onMAClicked('<%=need_ma_id.get(i)%>'); return false;"><%=need_ma_id.get(i) %></a> / <%=need_amount.get(i)%><BR><%
+						}
 					%> </td>
 				</tr>
 				<%
 				
 				use_ma_id.clear();
 				use_amount.clear();
+				need_ma_id.clear();
+				need_amount.clear();
 				strMA = "";
 			} while(resultTrade.next());
 		} else {

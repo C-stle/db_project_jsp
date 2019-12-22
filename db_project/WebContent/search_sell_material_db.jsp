@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS MagicStore</title>
 </head>
 <style>
 #div_logout{
@@ -48,7 +48,6 @@ right: 10px;
 		intAmount = new int[0];
 		count = 0;
 	}
-	
 	Statement stmt = null;
 	Connection conn = null;
 	ResultSet result = null;
@@ -58,6 +57,7 @@ right: 10px;
 	String dbUser = "root";
 	String dbPass = "maria12";
 	
+	String str = "재고 등록 실패";
 	try {
 		String driver = "org.mariadb.jdbc.Driver";
 		try {
@@ -70,30 +70,36 @@ right: 10px;
 		String selectMoney = "select Money from magicstore where MagicStore_ID = '" + keep_id + "';";
 		resultMoney = stmt.executeQuery(selectMoney);
 		resultMoney.next();
-		int money = Integer.parseInt(resultMoney.getString(1));
+		int money = Integer.parseInt(resultMoney.getString(1));	// 마법 상회 소지금
 		
 		String selectAmount = "select Material_ID, Amount from material_sell where MagicStore_ID = '" + keep_id + "';";
-		resultAmount = stmt.executeQuery(selectAmount);
+		resultAmount = stmt.executeQuery(selectAmount);	
 		while(resultAmount.next()) {
 			for (int i = 0 ; i<count;i++){
 				if(material_id[i].equals(resultAmount.getString(1))) {
-					int beforeAmount = Integer.parseInt(resultAmount.getString(2)); 
-					int newAmount = Integer.parseInt(stringAmount[i]);
-					if(beforeAmount < newAmount){
-						stringAmount[i] = String.valueOf(newAmount);
-						intAmount[i] = newAmount - beforeAmount;
-					} else if (beforeAmount == newAmount){
+					int beforeAmount = Integer.parseInt(resultAmount.getString(2));	// 현재 마법 상회가 판매 중인 재료들의 양
+					intAmount[i] = Integer.valueOf(stringAmount[i]);				// 재고 등록한 양
+					if(beforeAmount < intAmount[i]){								// 재고 등록한 양이 더 많은 경우, 구매가 일어남
+						stringAmount[i] = String.valueOf(intAmount[i]);
+						intAmount[i] = intAmount[i] - beforeAmount;
+					} else if (beforeAmount == intAmount[i]){						// 재고 등록한 양과 판매중인 양이 같은 경우, 구매가 일어나지 않음
 						intAmount[i] = 0;
+					} else {														// 판매 중인 재료 양보다 적게 입력한 경우, 오류 발생
+						str = str + "보유량보다 적은 양을 입력한 재료가 있습니다.\n재료 ID = " + material_id[i] + ", 보유량 = " + beforeAmount + ", 구매량 = " + intAmount[i];
 					}
 					break;
 				}
 			}
 		}
-		int totalPrice = 0;
+		int totalPrice = 0;		// 총 구매 가격 계산
 		for (int i = 0 ;i <count;i++){
 			totalPrice = totalPrice + (intAmount[i] * Integer.parseInt(stringPrice[i]));
 		}
-		if(money >= totalPrice) {
+		if(totalPrice == 0){
+			str = "새롭게 재고 등록한 재료가 없습니다.";
+			%><script>alert('<%=str%>');location.replace('search_sell_material.jsp');</script><%
+		}
+		if(totalPrice > 0 && money >= totalPrice) {		// 소지금 보다 총 구매 가격이 더 큰 경우
 			String deleteAll = "delete from Material_Sell where MagicStore_ID = '" + keep_id + "';";
 			stmt.executeUpdate(deleteAll);
 			
@@ -104,10 +110,10 @@ right: 10px;
 			money = money - totalPrice;
 			String updateMoneyMS = "update MagicStore set Money = " + String.valueOf(money) + " where MagicStore_ID = '" + keep_id + "';";
 			stmt.executeUpdate(updateMoneyMS);
-			String str = "재료 구매 완료\\n총 구매가격 : " + String.valueOf(totalPrice) + "\\n남은 소지금 : " + String.valueOf(money);
+			str = "재료 구매 완료\\n총 구매가격 : " + String.valueOf(totalPrice) + "\\n남은 소지금 : " + String.valueOf(money);
 			%><script>alert('<%=str%>');location.replace('main_magicstore.jsp');</script><%
 		} else {
-			String str = "재료 구매 실패\\n소지금이 부족합니다\\n총 구매가격 : " + String.valueOf(totalPrice) + "\\n현재 소지금 : " + String.valueOf(money);
+			str = str + "\\n소지금이 부족합니다\\n총 구매가격 : " + String.valueOf(totalPrice) + "\\n현재 소지금 : " + String.valueOf(money);
 			%><script>alert('<%=str%>');location.replace('search_sell_material.jsp');</script><%
 		}
 	} catch(SQLException e){

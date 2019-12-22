@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -71,9 +71,7 @@ function onMAClicked(value){
 	form.target = 'POP';
 	form.submit();
 }
-
 </script>
-
 </head>
 <body>
 	<%
@@ -107,10 +105,12 @@ function onMAClicked(value){
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
 		
-		String query = "select * from Customer where Customer_ID='" + keep_id + "';";
+		// 로그인한 고객의 정보 가져오기
+		String query = "select *, AES_DECRYPT(Customer_Password, Customer_ID) from Customer where Customer_ID='" + keep_id + "';";
 		resultC = stmt.executeQuery(query);
 		resultC.next();
 		
+		// 로그인한 고객의 거래처 마법 상회 ID 가져오기
 		query = "select MagicStore_ID from Customer_Account where Customer_ID = '" + keep_id + "';";
 		result = stmt.executeQuery(query);
 		List<String> ms_id = new ArrayList<String>();
@@ -119,6 +119,7 @@ function onMAClicked(value){
 		}
 		session.setAttribute("ms_count",ms_id.size());
 		
+		// 로그인한 고객이 구매한 마법 ID 가져오기
 		query = "select Magic_ID from Magic_Trade where Customer_ID = '" + keep_id + "';";
 		result = stmt.executeQuery(query);
 		List<String> m_id = new ArrayList<String>();
@@ -126,6 +127,7 @@ function onMAClicked(value){
 			m_id.add(result.getString(1));
 		}
 		
+		// 로그인한 고객이 구매한 재료 ID, 총 거래량 가져오기
 		query = "select Material_ID, SUM(Trade_Amount) from Material_Trade where Customer_ID = '" + keep_id + "' group by Material_ID;" ;
 		result = stmt.executeQuery(query);
 		List<String> ma_id = new ArrayList<String>();
@@ -134,7 +136,7 @@ function onMAClicked(value){
 			ma_id.add(result.getString(1));
 			ma_amount.add(result.getString(2));
 		}
-%>
+	%>
 	<h1>LoDos Customer</h1>	
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
@@ -147,7 +149,7 @@ function onMAClicked(value){
 	</div>
 	<div>
 		<div>아이디 : <%=resultC.getString(1) %></div>
-		<div>비밀번호 : <%=resultC.getString(2)%></div>
+		<div>비밀번호 : <%=resultC.getString(8)%></div>
 		<div>이름 : <%=resultC.getString(3) %></div>
 		<div>나이 : <%=resultC.getString(4) %></div>
 		<div>주소 : <%=resultC.getString(5) %></div>
@@ -156,10 +158,10 @@ function onMAClicked(value){
 		<BR>
 		<div id="div_input_ms">
 		<%
+		// 거래처 마법 상회 목록 구성
 		if(ms_id.isEmpty()) {
-			%><- 거래처 마법 상회가 없습니다.<%
+			%>- 거래처 마법 상회가 없습니다.<BR><%
 		} else {
-			
 			%><div>거래처 마법 상회</div><%
 			for(int i=0;i<ms_id.size();i++) {
 				%>
@@ -170,8 +172,9 @@ function onMAClicked(value){
 			}
 		}
 		%><BR><%
+		// 구매한 마법 목록 구성
 		if(m_id.isEmpty()) {
-			%>- 구매한 마법이 없습니다.<%
+			%>- 구매한 마법이 없습니다.<BR><%
 		} else {
 			
 			%><div>구매한 마법 목록</div><%
@@ -184,8 +187,9 @@ function onMAClicked(value){
 			}
 		}
 		%><BR><%
+		// 구매한 재료 목록 구성
 		if(ma_id.isEmpty()) {
-			%>- 구매한 재료가 없습니다.<%
+			%>- 구매한 재료가 없습니다.<BR><%
 		} else {
 			
 			%><div>구매한 재료 목록 / 보유량</div><%

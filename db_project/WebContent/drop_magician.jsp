@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR" errorPage="error.jsp"%>
+    pageEncoding="EUC-KR"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +14,6 @@ right: 10px;
 </style>
 </head>
 <body>
-
 	<%
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Cache-Control", "no-cache");
@@ -26,31 +25,19 @@ right: 10px;
 			%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 		}
 	%>
-
-	<div>
-		<h1>LoDoS Magician</h1>
-		<p><%=keep_id%>님 환영합니다.
-	</div>
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 	</div>
-	<div>
-		<input type="button" value="재료 등록" onclick="location.href='register_material.jsp'">
-	</div>
-	<div>
-		<input type="button" value="마법 등록" onclick="location.href='register_magic.jsp'">
-	</div>
-	<div>
-		<input type="button" value="본인 정보 확인" onclick="location.href='info_magician.jsp'">
-	</div>
-	<div>
-		<input type="button" value="창조 마법 확인" onclick="location.href='info_create_magic.jsp'">
-	</div>
-	<div>
-		<input type="button" value="창조 마법 거래내역 확인" onclick="location.href='search_trade_create_magic.jsp'">
-	</div>
-	<div>
-		<input type="button" value="회원 탈퇴" onclick="location.href='drop_magician.jsp'">
-	</div>
+	<form action="drop_magician_db.jsp" method="post">
+		<h1>회원 탈퇴</h1>
+		<p>본인 확인을 위해 비밀번호를 입력해주세요.
+		<p>비밀번호 : <input type="password" name="pw" required>
+		<BR>
+		<div>
+			<input type="submit" value="회원 탈퇴">
+			<input type="button" value="돌아가기" onclick="location.replace('main_magician.jsp')">
+		</div>
+	</form>
+	
 </body>
 </html>

@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS MagicStore</title>
 <style>
 #div_logout{
 position: absolute;

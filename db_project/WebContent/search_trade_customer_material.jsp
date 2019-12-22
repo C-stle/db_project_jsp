@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -113,8 +113,7 @@ if(keep_id == null || keep_id.equals("")) {
 %>
 
 	<div>
-		<h1>LoDos Customer</h1>
-		<p>재료 거래 내역
+		<h1>재료 거래 내역</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 		</div>

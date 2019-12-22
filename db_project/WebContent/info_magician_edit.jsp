@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;
@@ -19,34 +19,6 @@ top: 10px;
 right: 10px;
 }
 </style>
-<script type="text/javascript">
-	var count = <%=(int)session.getAttribute("ms_count")%>;
-
-	var last_check = 0;
-	
-	function addForm(){
-		var addedFormDiv = document.getElementById("addedFormDiv");
-		var str = "";
-		count++;
-		str+="소속 상회 " + count + " : <input name='ms_id' type='text' required>";
-		var addedDiv = document.createElement("div");
-		addedDiv.id = "added_"+count;
-		addedDiv.innerHTML  = str;
-		addedFormDiv.appendChild(addedDiv);
-		document.baseForm.count.value=count;
-	}
-
-	function delForm(){
-		var addedFormDiv = document.getElementById("addedFormDiv");
-		if(count>0){
-			var addedDiv = document.getElementById("added_"+(count--));
-			addedFormDiv.removeChild(addedDiv);
-		} else{
-			addedFormDiv.appendChild(addedDiv);
-		}
-		
-	}
-</script>
 
 </head>
 <body>
@@ -73,7 +45,6 @@ right: 10px;
 	String mana = null;
 	String money = null;
 	
-	
 	String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 	String dbUser = "root";
 	String dbPass = "maria12";
@@ -91,35 +62,25 @@ right: 10px;
 		}
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
-		String query = "select * from magician where magician_id='" + id + "';";
+		String query = "select *, AES_DECRYPT(Magician_Password, Magician_ID) from magician where magician_id='" + id + "';";
 		result = stmt.executeQuery(query);
 		result.next();
-		password = result.getString("Magician_Password");
-		name = result.getString("Magician_Name");
-		age = result.getString("Age");
-		species = result.getString("Species");
-		country = result.getString("Country_Of_Origin");
-		job = result.getString("Job");
-		m_class = result.getString("Magician_Class");
-		attribute = result.getString("Magician_Attribute");
-		mana = result.getString("Mana");
-		money = result.getString("Money");
-		
-		query = "select MagicStore_ID from magician_belong where Magician_ID = '" + id + "';";
-		result = stmt.executeQuery(query);
-		List<String> ms_id = new ArrayList<String>();
-		while(result.next()){
-			ms_id.add(result.getString("MagicStore_ID"));
-		}
-		
+		password = result.getString(12);
+		name = result.getString(3);
+		age = result.getString(4);
+		species = result.getString(5);
+		country = result.getString(6);
+		job = result.getString(7);
+		m_class = result.getString(8);
+		attribute = result.getString(9);
+		mana = result.getString(10);
+		money = result.getString(11);
 %>
-	<h1>LoDos Magician</h1>	
+	<h1>정보 수정</h1>	
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
 	<p><%=id %> 정보
-		<input type="button" value="마법 상회 추가" onclick="addForm()">
-		<input type="button" value="마법 상회 삭제" onclick="delForm()">
 	<form action="info_magician_db.jsp" method ="post">
 		<div>
 			<div>아이디 : <input name="id" type="text" value='<%=id %>' required=""></div>
@@ -130,23 +91,9 @@ right: 10px;
 			<div>출신지 : <input name="country" type="text" value='<%=country %>' required=""></div>
 			<div>직업 : <input name="job" type="text" value='<%=job %>' required=""></div>
 			<div>클래스 : <input name="class" type="number" min='1' max='9' value='<%=m_class %>' required=""></div>
-			<div>속성 : <input name="attribute" type="text" value='<%=attribute %>' required=""></div>
+			<div>속성 : <input name="attribute" type="text" value='<%=attribute %>' required="" disabled></div>
 			<div>마나량 : <input name="mana" type="number" min='100' value='<%=mana %>' required=""></div>
 			<div>소지금 : <input name="money" type="number" min='0' value='<%=money %>' required=""></div>
-		</div>
-		<div id="addedFormDiv">
-		<%
-			for(int i=0;i<ms_id.size();i++) {
-				%>
-				<div id="added_<%=(i+1)%>">
-					소속 상회 <%=(i+1)%> : <input name="ms_id" type="text" value='<%=ms_id.get(i)%>' required="">
-				</div>
-				<%
-			}
-		%>
-		</div>
-		<div>
-			<input type="hidden" name="count" value="<%=ms_id.size()%>">
 		</div>
 		<BR>
 		<div>
@@ -157,7 +104,7 @@ right: 10px;
 
 	<%	
 	} catch (SQLException e) {
-		
+		e.printStackTrace();
 	} finally {
 		try {
 			conn.close();
@@ -165,11 +112,6 @@ right: 10px;
 			e.printStackTrace();
 		}
 	}
-		
-		
-		%>
-	</div>
-	
-	
+	%>
 </body>
 </html>

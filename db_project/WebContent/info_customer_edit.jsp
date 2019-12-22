@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -47,12 +47,12 @@ right: 10px;
 		}
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
-		String query = "select * from Customer where Customer_id='" + keep_id + "';";
+		String query = "select *, AES_DECRYPT(Customer_Password, Customer_ID) from Customer where Customer_id='" + keep_id + "';";
 		result = stmt.executeQuery(query);
 		result.next();
 		
 %>
-	<h1>LoDos Customer</h1>	
+	<h1>LoDoS Customer</h1>	
 	<div id="div_logout">
 		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 	</div>
@@ -60,7 +60,7 @@ right: 10px;
 	<form action="info_customer_db.jsp" method ="post">
 		<div>
 			<div>아이디 : <input name="id" type="text" value='<%=result.getString(1) %>' required></div>
-			<div>비밀번호 : <input name="password" type="text" value='<%=result.getString(2) %>' required></div>
+			<div>비밀번호 : <input name="password" type="text" value='<%=result.getString(8) %>' required></div>
 			<div>이름 : <input name="name" type="text" value='<%=result.getString(3) %>' required></div>
 			<div>나이 : <input name="age" type="number" min='1' value='<%=result.getString(4) %>' required></div>
 			<div>주소 : <input name="address" type="text" value='<%=result.getString(5) %>' required></div>
@@ -73,10 +73,9 @@ right: 10px;
 			<input type="button" value="돌아가기" onclick="location.replace('info_customer.jsp')">
 		</div>
 	</form>
-
 	<%	
 	} catch (SQLException e) {
-		
+		e.printStackTrace();
 	} finally {
 		try {
 			conn.close();
@@ -84,10 +83,7 @@ right: 10px;
 			e.printStackTrace();
 		}
 	}
-		
-		
-		%>
+	%>
 	</div>
-	
 </body>
 </html>

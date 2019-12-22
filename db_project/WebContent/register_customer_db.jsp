@@ -53,9 +53,6 @@
 		
 		while(resultID.next()) {
 			if(id.equals(resultID.getString(1))) {
-				
-				String str = "동일한 ID가 존재합니다.";
-				%><script>alert('<%=str%>');location.replace('register_customer.jsp');</script><%
 				checkID = 0;
 				break;
 			}
@@ -63,8 +60,11 @@
 	
 		if(checkID == 1) {
 			stmt.executeUpdate(insert_customer);
-			String str = "고객 회원 가입 완료";
+			String str = "회원 가입 완료";
 			%><script>alert('<%=str%>');location.replace('login.jsp');</script><%
+		} else {
+			String str = "회원 가입 실패\\n동일한 ID가 존재합니다.";
+			%><script>alert('<%=str%>');location.replace('register_customer.jsp');</script><%
 		}
 	} catch (SQLException e) {
 		e.printStackTrace();

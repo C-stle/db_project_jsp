@@ -52,25 +52,18 @@
 			int checkID = 1;
 			while(resultID.next()) {
 				if(id.equals(resultID.getString(1))) {
-					
-					%>
-					<h1>동일한 ID가 존재합니다.</h1>
-					<input type="button" value="돌아가기" onclick="location.replace('register_magician.jsp')">
-					<%
 					checkID = 0;
 					break;
 				}
 			}
+			
 			if(checkID == 1) {
 				stmt.executeUpdate(insert_magician);
-			%>			
-				<div>
-					<h1>등록 완료</h1>
-				</div>
-				<div>
-					<input type="button" value="돌아가기" onclick="location.replace('login.jsp')">
-				</div>
-			<%
+				String str = "회원 가입 완료";
+				%><script>alert('<%=str%>');location.replace('login.jsp');</script><%
+			} else {
+				String str = "회원 가입 실패\\n동일한 ID가 존재합니다.";
+				%><script>alert('<%=str%>');location.replace('register_magician.jsp');</script><%
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

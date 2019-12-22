@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -21,7 +21,7 @@ right: 10px;
 var count = 0;
 var kind = "id";
 function filter(){
-	var value, radio, table, cell, i;
+	var value, table, cell, i;
 	value = document.getElementById("value").value;
 	table = document.getElementById("table");
 	if (kind == "id") {
@@ -82,7 +82,6 @@ function onBuyClicked(){
 	
 	for(var i = 0;i<checkbox.length;i++){
 		if(checkbox[i].checked==true){
-			
 			var addedFormDiv = document.getElementById("addedFormDiv");
 			var str = "";
 			str+="<input name='m_id' type='hidden' value='"+ checkbox[i].value + "'>";
@@ -112,7 +111,7 @@ function onBuyClicked(){
 	}
 	%>
 	<div>
-		<h1>LoDos Customer</h1>
+		<h1>LoDoS Customer</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 		</div>
@@ -159,7 +158,7 @@ function onBuyClicked(){
 		resultM = stmt.executeQuery(selectMSBelongM);
 		if(resultM.next()){
 			%>
-			<table border="1" width="900" id="table">
+			<table border="1" width="100%" id="table">
 				<tr align="center">
 					<th>아이디</th>
 					<th>이름</th>
@@ -180,6 +179,7 @@ function onBuyClicked(){
 				result = stmt.executeQuery(selectMagic);
 				while(result.next()){
 					%>
+					<script>count = count + 1;</script>
 					<tr align="center">
 						<td><%=result.getString(1) %></td>
 						<td><%=result.getString(2) %></td>
@@ -203,10 +203,11 @@ function onBuyClicked(){
 						<td><input type="checkbox" name="buy" id="<%=result.getString(9) %>" value="<%=result.getString(1) %>"></td>
 					<%		
 					}
+					%></tr><%
 				}
 			}
 			while(resultM.next());
-			
+			%></table><%
 		} else {
 			%>
 			<p>판매 중인 마법이 없습니다.
@@ -222,7 +223,7 @@ function onBuyClicked(){
 		}
 	}
 	%>
-	</table>
+	
 	<form action="search_buy_magic_db.jsp" method="post" id="hideForm">
 		<div id="addedFormDiv">
 		</div>

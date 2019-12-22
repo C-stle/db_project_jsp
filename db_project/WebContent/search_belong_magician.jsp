@@ -97,128 +97,133 @@ function onEditClicked(){
 </script>
 </head>
 <body>
-<%
-// 전체 마법사 목록 표출, 선택 (허가 클래스 조건 체크)
-// 마법사 목록에 대한 검색기능 제공
-response.setHeader("Pragma", "no-cache");
-response.setHeader("Cache-Control", "no-cache");
-response.setHeader("Cache-Control","no-store");
-response.setDateHeader("Expires",0L);
-
-String keep_id = (String)session.getAttribute("id");
-if(keep_id == null || keep_id.equals("")) {
-	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
-}
-int ms_class = Integer.parseInt((String)session.getAttribute("ms_class"));
-%>
-<div>
-	<h1>LoDos Magic Store</h1>
-	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
-	</div>
-	<p><%=keep_id %> 소속 마법사 조회
-</div>
-<div>
-	<input type="radio" name="kind" id="kind" value="id" onclick="onchecked();" checked>아이디
-	<input type="radio" name="kind" id="kind" value="name" onclick="onchecked();">이름
-	<input type="radio" name="kind" id="kind" value="age" onclick="onchecked();">나이
-	<input type="radio" name="kind" id="kind" value="species" onclick="onchecked();">종족
-	<input type="radio" name="kind" id="kind" value="home" onclick="onchecked();">출신지
-	<input type="radio" name="kind" id="kind" value="job" onclick="onchecked();">직업
-	<input type="radio" name="kind" id="kind" value="class" onclick="onchecked();">클래스
-	<input type="radio" name="kind" id="kind" value="attribute" onclick="onchecked();">속성
-	<input type="radio" name="kind" id="kind" value="mana" onclick="onchecked();">마나량
-	<input type="text" id="value" placeholder = "Searching Magician" onkeyup="filter();">
-	<input type="button" value="소속 수정" onclick="onEditClicked();">
-<input type="button" value="돌아가기" onclick="location.href='main_magicstore.jsp'">
-</div>
-<BR>
-<%
-Statement stmt = null;
-Connection conn = null;
-ResultSet resultMagician = null;
-ResultSet resultBelongMS = null;
-String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
-String dbUser = "root";
-String dbPass = "maria12";
-
-
-try {
-	String driver = "org.mariadb.jdbc.Driver";
-	try {
-		Class.forName(driver);
-	} catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	}
-	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
-	stmt = conn.createStatement();
-	String selectMagician = "select Magician_ID, Magician_Name, Age, Species, Country_Of_Origin, job, Magician_Class, Magician_Attribute, Mana from Magician";
-	int count = 0;
-	resultMagician = stmt.executeQuery(selectMagician);
-	%>
-	<table border="1" width="900" id="table">
-		<tr align="center">
-			<th>아이디</th>
-			<th>이름</th>
-			<th>나이</th>
-			<th>종족</th>
-			<th>출신지</th>
-			<th>직업</th>
-			<th>클래스</th>
-			<th>속성</th>
-			<th>마나량</th>
-			<th>소속여부</th>
-		</tr>
 	<%
-	while(resultMagician.next()){
-		int m_class = Integer.parseInt(resultMagician.getString(7));
-		if(m_class <= ms_class){
-			count++;
-			String m_id = resultMagician.getString(1);
-			String selectBelongMS = "select * from Magician_Belong where Magician_ID = '" + m_id + "'and MagicStore_ID = '" + keep_id + "';";
-			resultBelongMS = stmt.executeQuery(selectBelongMS);
+	// 전체 마법사 목록 표출, 선택 (허가 클래스 조건 체크)
+	// 마법사 목록에 대한 검색기능 제공
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Cache-Control","no-store");
+	response.setDateHeader("Expires",0L);
+	
+	String keep_id = (String)session.getAttribute("id");
+	if(keep_id == null || keep_id.equals("")) {
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
+	}
+	int ms_class = Integer.parseInt((String)session.getAttribute("ms_class"));
+	%>
+	<div>
+		<h1>LoDos Magic Store</h1>
+		<div id="div_logout">
+			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
+		</div>
+		<p><%=keep_id %> 소속 마법사 조회
+	</div>
+	<div>
+		<input type="radio" name="kind" id="kind" value="id" onclick="onchecked();" checked>아이디
+		<input type="radio" name="kind" id="kind" value="name" onclick="onchecked();">이름
+		<input type="radio" name="kind" id="kind" value="age" onclick="onchecked();">나이
+		<input type="radio" name="kind" id="kind" value="species" onclick="onchecked();">종족
+		<input type="radio" name="kind" id="kind" value="home" onclick="onchecked();">출신지
+		<input type="radio" name="kind" id="kind" value="job" onclick="onchecked();">직업
+		<input type="radio" name="kind" id="kind" value="class" onclick="onchecked();">클래스
+		<input type="radio" name="kind" id="kind" value="attribute" onclick="onchecked();">속성
+		<input type="radio" name="kind" id="kind" value="mana" onclick="onchecked();">마나량
+		<input type="text" id="value" placeholder = "Searching Magician" onkeyup="filter();">
+		<input type="button" value="소속 수정" onclick="onEditClicked();">
+	<input type="button" value="돌아가기" onclick="location.href='main_magicstore.jsp'">
+	</div>
+	<BR>
+	<%
+	Statement stmt = null;
+	Connection conn = null;
+	ResultSet resultMagician = null;
+	ResultSet resultBelongMS = null;
+	String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
+	String dbUser = "root";
+	String dbPass = "maria12";
+	
+	
+	try {
+		String driver = "org.mariadb.jdbc.Driver";
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+		stmt = conn.createStatement();
+		
+		String selectMagician = "select Magician_ID, Magician_Name, Age, Species, Country_Of_Origin, job, Magician_Class, Magician_Attribute, Mana from Magician";
+		int count = 0;
+		resultMagician = stmt.executeQuery(selectMagician);
+		if(resultMagician.next()){
 			%>
-			<script>count = count + 1;</script>
-			<tr align="center">
-				<td><%=m_id %></td>
-				<td><%=resultMagician.getString(2) %></td>
-				<td><%=resultMagician.getString(3) %></td>
-				<td><%=resultMagician.getString(4) %></td>
-				<td><%=resultMagician.getString(5) %></td>
-				<td><%=resultMagician.getString(6) %></td>
-				<td><%=resultMagician.getString(7) %></td>
-				<td><%=resultMagician.getString(8) %></td>
-				<td><%=resultMagician.getString(9) %></td>
+			<table border="1" width="100%" id="table">
+				<tr align="center">
+					<th>아이디</th>
+					<th>이름</th>
+					<th>나이</th>
+					<th>종족</th>
+					<th>출신지</th>
+					<th>직업</th>
+					<th>클래스</th>
+					<th>속성</th>
+					<th>마나량</th>
+					<th>소속여부</th>
+				</tr>
 			<%
-			if(resultBelongMS.next()){
-			%>
-				<td><input type="checkbox" name="belong" value="<%=m_id %>" checked></td>
-			<%		
-			} else {
-			%>
-				<td><input type="checkbox" name="belong" value="<%=m_id %>"></td>
+			do {
+				int m_class = Integer.parseInt(resultMagician.getString(7));
+				if(m_class <= ms_class){
+					count++;
+					String m_id = resultMagician.getString(1);
+					String selectBelongMS = "select * from Magician_Belong where Magician_ID = '" + m_id + "'and MagicStore_ID = '" + keep_id + "';";
+					resultBelongMS = stmt.executeQuery(selectBelongMS);
+					%>
+					<script>count = count + 1;</script>
+					<tr align="center">
+						<td><%=m_id %></td>
+						<td><%=resultMagician.getString(2) %></td>
+						<td><%=resultMagician.getString(3) %></td>
+						<td><%=resultMagician.getString(4) %></td>
+						<td><%=resultMagician.getString(5) %></td>
+						<td><%=resultMagician.getString(6) %></td>
+						<td><%=resultMagician.getString(7) %></td>
+						<td><%=resultMagician.getString(8) %></td>
+						<td><%=resultMagician.getString(9) %></td>
+					<%
+					if(resultBelongMS.next()){
+					%>
+						<td><input type="checkbox" name="belong" value="<%=m_id %>" checked></td>
+					<%		
+					} else {
+					%>
+						<td><input type="checkbox" name="belong" value="<%=m_id %>"></td>
+					<%
+					}
+					%>
+					</tr>
 			<%
-			}
-			%>
-			</tr>
-			<%
+				}
+			}while(resultMagician.next());
+			%></table><%
+		} else {
+			%><script>alert('거래허가 클래스보다 낮거나 같은 클래스를 가진 마법사가 없습니다.');location.replace('main_magicstore.jsp');</script><%
+		}
+	} catch (SQLException e){
+		e.printStackTrace();
+	} finally {
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
-} catch (SQLException e){
-	e.printStackTrace();
-} finally {
-	try {
-		conn.close();
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-}
-%>
-</table>
-<form action="search_belong_magician_db.jsp" method="post" id="hideForm">
-	<div id="addedFormDiv">
-	</div>
-</form>
-<BR>
+	%>
+	
+	<form action="search_belong_magician_db.jsp" method="post" id="hideForm">
+		<div id="addedFormDiv">
+		</div>
+	</form>
 </body>
 </html>

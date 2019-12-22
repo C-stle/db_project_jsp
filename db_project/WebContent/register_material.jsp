@@ -8,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-store"/>
 <meta http-equiv="Expires" content="0"/>
 <meta http-equiv="Pragma" content="no-cache"/>
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;

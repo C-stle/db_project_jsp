@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Customer</title>
 <style>
 #div_logout{
 position: absolute;
@@ -23,12 +23,10 @@ function onClicked(){
 	form.action ='search_buy_material.jsp';
 	form.submit();
 }
-
-
 </script>
 </head>
 <body>
-	<%
+	<% //고객이 마법, 재료 구매를 위한 마법 상회 선택 화면
 	response.setHeader("Pragma", "no-cache");
 	response.setHeader("Cache-Control", "no-cache");
 	response.setHeader("Cache-Control","no-store");
@@ -40,7 +38,7 @@ function onClicked(){
 	}
 	%>
 	<div>
-		<h1>LoDos Customer</h1>
+		<h1>거래처 선택</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 		</div>
@@ -64,27 +62,31 @@ function onClicked(){
 			}
 			conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 			stmt = conn.createStatement();
+			
+			//거래처 마법 상회 ID를 가져옴
 			String select = "select MagicStore_ID from Customer_Account where Customer_ID = '" + keep_id + "';";
 			result = stmt.executeQuery(select);
-			int check = 0;
-			while(result.next()){
-				if(check==0){
-					%>
-					<div>
-						<input type="radio" name="ms_id" value="<%=result.getString(1) %>" checked> <%=result.getString(1) %>
-					</div>
-					<%
-					check++;
-				} else {
-					%>
-					<div>
-						<input type="radio" name="ms_id" value="<%=result.getString(1) %>"> <%=result.getString(1) %>
-					</div>
-					<%
-				}
-				
+			int check = 0;	// 하나만 checked 설정을 위한 변수
+			if(result.next()){	// 거래처 마법 상회가 있는 경우
+				do {
+					if(check==0){	// 첫번째 거래처 마법 상회인 경우, checked 설정
+						%>
+						<div>
+							<input type="radio" name="ms_id" value="<%=result.getString(1) %>" checked> <%=result.getString(1) %>
+						</div>
+						<%
+						check++;
+					} else {	// 두번째 이상의 거래처 마법 상회인 경우
+						%>
+						<div>
+							<input type="radio" name="ms_id" value="<%=result.getString(1) %>"> <%=result.getString(1) %>
+						</div>
+						<%
+					}
+				} while(result.next());
+			} else {	// 거래처 마법 상회가 없는 경우
+				%><script>alert('거래처 마법 상회가 없습니다.');location.replace('main_customer.jsp');</script><%
 			}
-			
 		} catch(SQLException e){
 			
 		} finally {

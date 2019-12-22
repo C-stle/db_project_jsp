@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;
@@ -120,8 +120,7 @@ if(keep_id == null || keep_id.equals("")) {
 %>
 
 	<div>
-		<h1>LoDos Customer</h1>
-		
+		<h1>창조 마법 거래 내역</h1>
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('login.jsp')">
 		</div>
@@ -187,11 +186,11 @@ if(keep_id == null || keep_id.equals("")) {
 						<td><a href="javascript:void(0);" onclick="onMClicked('<%=resultTrade.getString(4)%>'); return false;"><%=resultTrade.getString(4) %></a></td>
 					</tr>
 					<%
+				} else {
+					String str = "창조 마법 거래 내역이 없습니다.";
+					%><script>alert('<%=str%>');location.replace('main_magician.jsp');</script><%
 				}
 			}
-		} else {
-			String str = "창조 마법 거래 내역이 없습니다.";
-			%><script>alert('<%=str%>');location.replace('main_magician.jsp');</script><%
 		}
 	} catch (SQLException e){
 		e.printStackTrace();

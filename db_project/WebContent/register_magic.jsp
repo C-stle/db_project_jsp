@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>LoDoS Magician</title>
 <style>
 #div_logout{
 position: absolute;
@@ -27,7 +27,6 @@ right: 10px;
 		addedDiv.id = "added_"+count;
 		addedDiv.innerHTML  = str;
 		addedFormDiv.appendChild(addedDiv);
-		document.baseForm.count.value=count;
 	}
 
 	function delForm(){
@@ -50,7 +49,7 @@ right: 10px;
 	
 	String keep_id = (String)session.getAttribute("id");
 	if(keep_id == null || keep_id.equals("")) {
-		%><script>location.replace('login.jsp');</script><%
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
 	}
 	%>
 	
@@ -79,9 +78,6 @@ right: 10px;
 				재료1 ID : <input name='m_id' type='text' required>
 				필요량 : <input name='amount' type='number' min='1' required>
 			</div>
-		</div>
-		<div>
-			<input type="hidden" name="count" value="1">
 		</div>
 		<BR>
 		<div>
