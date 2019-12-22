@@ -160,7 +160,7 @@ try {
 	<div>보유 재료 / 보유량</div>
 	<%	
 	// 보유 재료, 보유량 표출 클릭시 정보 표출
-	String selectMA = "select Material_ID, Inventory_Volume from Material_Sell where MagicStore_ID = '" + keep_id + "';";
+	String selectMA = "select Material_ID, Trade_Amount from Material_Sell where MagicStore_ID = '" + keep_id + "';";
 	result = stmt.executeQuery(selectMA);
 	List<String> listMA = new ArrayList<String>();
 	while(result.next()){

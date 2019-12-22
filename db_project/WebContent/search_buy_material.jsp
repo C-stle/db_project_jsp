@@ -28,26 +28,16 @@ function filter(){
 		cell = 0;
 	} else if(kind == "name"){
 		cell = 1;
-	} else if (kind == "explain") {
+	} else if (kind == "origin") {
 		cell = 2;
-	} else if (kind == "class"){
-		cell = 3;
-	} else if (kind == "attribute"){
-		cell = 4;
 	} else if (kind == "type"){
-		cell = 5;
-	} else if (kind == "effect"){
-		cell = 6;
-	} else if (kind == "mana"){
-		cell = 7;
+		cell = 3;
 	} else if (kind == "price"){
-		cell = 8;
-	} else if (kind == "creator"){
-		cell = 9;
+		cell = 4;
 	}
 
 	for(i=1;i<=count;i++){
-		if(cell == 3 || cell == 6 || cell == 7 || cell == 8){
+		if(cell == 4){
 			if(value == ""){
 				table.rows[i].style.display="";
 			} else {
@@ -77,19 +67,21 @@ function onchecked(){
 }
 
 function onBuyClicked(){
-	var checkbox, table;
-	checkbox = document.getElementsByName("buy");
-	
-	for(var i = 0;i<checkbox.length;i++){
-		if(checkbox[i].checked==true){
+	var amount, table;
+	amount = document.getElementsByName("amount");
+	table = document.getElementById("table");
+	for(var i = 0;i<amount.length;i++){
+		if(amount[i].value=="0" || amount[i].value=="" || amount[i].value == null){
 			
+		} else {
 			var addedFormDiv = document.getElementById("addedFormDiv");
 			var str = "";
-			str+="<input name='m_id' type='hidden' value='"+ checkbox[i].value + "'>";
-			str+="<input name='m_price' type='hidden' value='" + checkbox[i].id + "'>";
+			str+="<input name='ma_id' type='hidden' value='"+ amount[i].id + "'>";
+			str+="<input name='ma_amount' type='hidden' value='" + amount[i].value + "'>";
+			str+="<input name='ma_price' type='hidden' value='" + table.rows[i+1].cells[4].innerHTML + "'>";
 			var addedDiv = document.createElement("div");
 			addedDiv.id = "added";
-			addedDiv.innerHTML  = str;
+			addedDiv.innerHTML = str;
 			addedFormDiv.appendChild(addedDiv);
 		}
 	}
@@ -116,28 +108,22 @@ function onBuyClicked(){
 		<div id="div_logout">
 			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 		</div>
-		<p>판매 마법 조회
+		<p>판매 재료 조회
 	</div>
 	<div>
 		<input type="radio" name="kind" id="kind" value="id" onclick="onchecked();" checked>아이디
 		<input type="radio" name="kind" id="kind" value="name" onclick="onchecked();">이름
-		<input type="radio" name="kind" id="kind" value="explain" onclick="onchecked();">설명
-		<input type="radio" name="kind" id="kind" value="class" onclick="onchecked();">클래스
-		<input type="radio" name="kind" id="kind" value="attribute" onclick="onchecked();">속성
+		<input type="radio" name="kind" id="kind" value="origin" onclick="onchecked();">원산지
 		<input type="radio" name="kind" id="kind" value="type" onclick="onchecked();">종류
-		<input type="radio" name="kind" id="kind" value="effect" onclick="onchecked();">효과량
-		<input type="radio" name="kind" id="kind" value="mana" onclick="onchecked();">마나소비량
 		<input type="radio" name="kind" id="kind" value="price" onclick="onchecked();">가격
-		<input type="radio" name="kind" id="kind" value="creator" onclick="onchecked();">창조자
-		<input type="text" id="value" placeholder = "Searching Magic" onkeyup="filter();">
-		<input type="button" value="마법 구매" onclick="onBuyClicked();">
-		<input type="button" value="돌아가기" onclick="location.href='main_customer.jsp'">
+		<input type="text" id="value" placeholder = "Searching Material" onkeyup="filter();">
+		<input type="button" value="재료 구매" onclick="onBuyClicked();">
+		<input type="button" value="돌아가기" onclick="location.href='info_customer_account.jsp'">
 	</div>
 	<BR>
 	<%
 	Statement stmt = null;
 	Connection conn = null;
-	ResultSet resultM = null;
 	ResultSet result = null;
 	ResultSet resultTrade = null;
 	
@@ -155,61 +141,54 @@ function onBuyClicked(){
 		}
 		conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 		stmt = conn.createStatement();
-		String selectMSBelongM = "select Magician_ID from Magician_Belong where MagicStore_ID = '" + ms_id + "';";
-		resultM = stmt.executeQuery(selectMSBelongM);
-		if(resultM.next()){
-			%>
-			<table border="1" width="900" id="table">
-				<tr align="center">
-					<th>아이디</th>
-					<th>이름</th>
-					<th>설명</th>
-					<th>클래스</th>
-					<th>속성</th>
-					<th>종류</th>
-					<th>효과량</th>
-					<th>마나소비량</th>
-					<th>가격</th>
-					<th>창조자</th>
-					<th>구매여부</th>
-				</tr>
-			<%
-			
+		
+		String selectMASMT = "select A.Material_ID, A.Amount, SUM(B.Trade_Amount) as Trade_Amount "
+							+ "from Material_Sell as A left outer join Material_Trade as B on A.Material_ID = B.Material_ID "
+							+ "where A.MagicStore_ID = '" + ms_id + "' group by A.Material_ID;";
+		resultTrade = stmt.executeQuery(selectMASMT);
+		%>
+		<table border="1" width="900" id="table">
+			<tr align="center">
+				<th>아이디</th>
+				<th>이름</th>
+				<th>원산지</th>
+				<th>종류</th>
+				<th>가격</th>
+				<th>보유량</th>
+			</tr>
+		<%
+		if(resultTrade.next()){
 			do {
-				String selectMagic = "select * from Magic where Creator_ID = '" + resultM.getString(1) + "';";
-				result = stmt.executeQuery(selectMagic);
-				while(result.next()){
-					%>
-					<tr align="center">
-						<td><%=result.getString(1) %></td>
-						<td><%=result.getString(2) %></td>
-						<td><%=result.getString(3) %></td>
-						<td><%=result.getString(4) %></td>
-						<td><%=result.getString(5) %></td>
-						<td><%=result.getString(6) %></td>
-						<td><%=result.getString(7) %></td>
-						<td><%=result.getString(8) %></td>
-						<td><%=result.getString(9) %></td>
-						<td><%=result.getString(10) %></td>
-					<%
-					String selectTrade = "select * from magic_trade where Customer_ID = '" + keep_id + "' and Magic_ID ='" + result.getString(1) + "';";
-					resultTrade = stmt.executeQuery(selectTrade);
-					if(resultTrade.next()){
-					%>
-						<td><input type="checkbox" name="buy" id="<%=result.getString(9) %>" value="<%=result.getString(1) %>" checked disabled></td>
-					<%		
-					} else {
-					%>
-						<td><input type="checkbox" name="buy" id="<%=result.getString(9) %>" value="<%=result.getString(1) %>"></td>
-					<%		
-					}
+				String selectMA = "select * from Material where Material_ID = '" + resultTrade.getString(1) + "';";
+				result = stmt.executeQuery(selectMA);
+				result.next();
+				%>
+				<script>count = count + 1;</script>
+				<tr align="center">
+					<td><%=result.getString(1) %></td>
+					<td><%=result.getString(2) %></td>
+					<td><%=result.getString(3) %></td>
+					<td><%=result.getString(4) %></td>
+					<td><%=result.getString(5) %></td>
+				<%
+				if(resultTrade.getString(3) == null){
+				%>
+					<td><input type="number" name="amount" id="<%=result.getString(1) %>" value="0" min='0' max='<%=resultTrade.getString(2)%>' required></td>
+				<%	
+				} else {
+				%>
+					<td><input type="number" name="amount" id="<%=result.getString(1) %>" value="<%=resultTrade.getString(3)%>" min='<%=resultTrade.getString(3)%>' max = '<%=resultTrade.getString(2)%>' required></td>
+				<%	
 				}
-			}
-			while(resultM.next());
+				%>
+				</tr>
+				<%
+				
+			} while(resultTrade.next());
 			
 		} else {
 			%>
-			<p>판매 중인 마법이 없습니다.
+			<p>판매 중인 재료가 없습니다.
 			<%
 		}
 	} catch (SQLException e){
@@ -223,7 +202,7 @@ function onBuyClicked(){
 	}
 	%>
 	</table>
-	<form action="search_buy_magic_db.jsp" method="post" id="hideForm">
+	<form action="search_buy_material_db.jsp" method="post" id="hideForm">
 		<div id="addedFormDiv">
 		</div>
 	</form>

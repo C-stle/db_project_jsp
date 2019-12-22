@@ -44,16 +44,16 @@ if(keep_id == null || keep_id.equals("")) {
 		<input type="button" value="거래처  조회" onclick="location.href='search_magicstore_account.jsp'">
 	</div>
 	<div>
-		<input type="button" value="마법 구매" onclick="location.href='info_customer_account.jsp'">
+		<input type="button" value="마법 / 재료 구매" onclick="location.href='info_customer_account.jsp'">
 	</div>
 	<div>
-		<input type="button" value="재료 구매" onclick="location.href='register_edit.jsp'">
+		<input type="button" value="본인 정보 확인" onclick="location.href='info_customer.jsp'">
 	</div>
 	<div>
-		<input type="button" value="정보 확인" onclick="location.href='register_edit.jsp'">
+		<input type="button" value="마법 거래 내역 확인" onclick="location.href='search_trade_customer_magic.jsp'">
 	</div>
 	<div>
-		<input type="button" value="거래내역" onclick="location.href='register_edit.jsp'">
+		<input type="button" value="재료 거래 내역 확인" onclick="location.href='search_trade_customer_material.jsp'">
 	</div>
 </body>
 </html>

@@ -28,7 +28,7 @@
 		ResultSet resultID = null;
 		
 		String insert_magicstore = 
-				"insert into magicstore values('" + id + "', '" + password + "', '" + name + "', '" +
+				"insert into magicstore values('" + id + "', AES_ENCRYPT('" + password + "', '" + id + "'), '" + name + "', '" +
 				 address + "', '" + representative + "', '" + m_class + "', '10000');";
 		Statement stmt = null;
 		Connection conn = null;

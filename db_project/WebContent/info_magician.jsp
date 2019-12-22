@@ -159,9 +159,9 @@ response.setDateHeader("Expires",0L);
 	%>
 	</div>
 	<form method="post" id="hideForm">
-	<div id="addedFormDiv">
-	</div>
-</form>
+		<div id="addedFormDiv">
+		</div>
+	</form>
 	
 </body>
 </html>

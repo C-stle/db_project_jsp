@@ -17,71 +17,90 @@ top: 10px;
 right: 10px;
 }
 </style>
+<script type="text/javascript">
+function onClicked(){
+	var form = document.getElementById("mainForm");
+	form.action ='search_buy_material.jsp';
+	form.submit();
+}
+
+
+</script>
 </head>
 <body>
-<%
-response.setHeader("Pragma", "no-cache");
-response.setHeader("Cache-Control", "no-cache");
-response.setHeader("Cache-Control","no-store");
-response.setDateHeader("Expires",0L);
-
-String keep_id = (String)session.getAttribute("id");
-if(keep_id == null || keep_id.equals("")) {
-	%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
-}
-%>
-<div>
-	<h1>LoDos Customer</h1>
-	<div id="div_logout">
-		<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
-	</div>
-	<p><%=keep_id %> 거래처 선택
-</div>
-<form action="search_buy_magic.jsp" method="post">
-<%
-Statement stmt = null;
-Connection conn = null;
-ResultSet result = null;
-String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
-String dbUser = "root";
-String dbPass = "maria12";
-
-
-try {
-	String driver = "org.mariadb.jdbc.Driver";
-	try {
-		Class.forName(driver);
-	} catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	}
-	conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
-	stmt = conn.createStatement();
-	String select = "select MagicStore_ID from Customer_Account where Customer_ID = '" + keep_id + "';";
-	result = stmt.executeQuery(select);
+	<%
+	response.setHeader("Pragma", "no-cache");
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Cache-Control","no-store");
+	response.setDateHeader("Expires",0L);
 	
-	while(result.next()){
-		%>
-		<div>
-			<input type="radio" name="ms_id" value="<%=result.getString(1) %>"> <%=result.getString(1) %>
+	String keep_id = (String)session.getAttribute("id");
+	if(keep_id == null || keep_id.equals("")) {
+		%><script>alert('로그인 세션이 만료되었거나, 잘못된 접근 입니다.');location.replace('login.jsp');</script><%
+	}
+	%>
+	<div>
+		<h1>LoDos Customer</h1>
+		<div id="div_logout">
+			<input type="button" value="Logout" onclick="location.replace('logout.jsp')">
 		</div>
+		<p><%=keep_id %> 거래처 선택
+	</div>
+	<form action="search_buy_magic.jsp" method="post" id="mainForm">
 		<%
-	}
-	
-} catch(SQLException e){
-	
-} finally {
-	try {
-		conn.close();
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-}
-%>
-<BR>
-<div>
-	<input type="submit" value="판매 마법 보기">
-	<input type="button" value="돌아가기" onclick="location.replace('main_customer.jsp');">
-</div>
-</form>
+		Statement stmt = null;
+		Connection conn = null;
+		ResultSet result = null;
+		String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
+		String dbUser = "root";
+		String dbPass = "maria12";
+		
+		try {
+			String driver = "org.mariadb.jdbc.Driver";
+			try {
+				Class.forName(driver);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
+			stmt = conn.createStatement();
+			String select = "select MagicStore_ID from Customer_Account where Customer_ID = '" + keep_id + "';";
+			result = stmt.executeQuery(select);
+			int check = 0;
+			while(result.next()){
+				if(check==0){
+					%>
+					<div>
+						<input type="radio" name="ms_id" value="<%=result.getString(1) %>" checked> <%=result.getString(1) %>
+					</div>
+					<%
+					check++;
+				} else {
+					%>
+					<div>
+						<input type="radio" name="ms_id" value="<%=result.getString(1) %>"> <%=result.getString(1) %>
+					</div>
+					<%
+				}
+				
+			}
+			
+		} catch(SQLException e){
+			
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		%>
+		<BR>
+		<div>
+			<input type="submit" value="판매 마법 보기">
+			<input type="button" value="판매 재료 보기" onclick="onClicked();">
+			<input type="button" value="돌아가기" onclick="location.replace('main_customer.jsp');">
+		</div>
+	</form>
 </body>
 </html>

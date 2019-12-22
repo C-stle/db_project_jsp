@@ -43,5 +43,8 @@ if(keep_id == null || keep_id.equals("")) {
 	<div>
 		<input type="button" value="마법상회 정보 확인" onclick="location.href='info_magicstore.jsp'">
 	</div>
+	<div>
+		<input type="button" value="거래내역 확인" onclick="location.href='search_trade_ms.jsp'">
+	</div>
 </body>
 </html>

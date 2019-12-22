@@ -33,7 +33,7 @@
 		ResultSet resultID = null;
 		
 		String insert_magician = 
-				"insert into magician values('" + id + "', '" + password + "', '" + name + "', '" +
+				"insert into magician values('" + id + "', AES_ENCRYPT('" + password + "', '" + id + "'), '" + name + "', '" +
 				 age + "', '" + species + "', '" + country + "', '" + job + "', '" + m_class + 
 				 "', '" + attribute + "', '" + mana + "', '" + "1000');";
 		Statement stmt = null;

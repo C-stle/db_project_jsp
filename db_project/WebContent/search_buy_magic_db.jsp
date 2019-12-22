@@ -105,7 +105,7 @@ try {
 		query = "delete from Magic_Trade where Customer_ID = '" + keep_id + "';";
 		stmt.executeUpdate(query);
 		for(int i=0;i<count;i++){
-			query = "insert into magic_trade values('" + ms_id + "', '" + keep_id + "', '" + magic_id[i] + "');";
+			query = "insert into magic_trade(MagicStore_ID, Customer_ID, Magic_ID) values('" + ms_id + "', '" + keep_id + "', '" + magic_id[i] + "');";
 			stmt.executeUpdate(query);
 			query = "select Creator_ID, Magic_Attribute from Magic where Magic_ID = '" + magic_id[i] + "';";
 			result = stmt.executeQuery(query);

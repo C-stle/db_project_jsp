@@ -84,8 +84,8 @@ try {
 	
 	if(checkID == 1){
 		if(checkClass > 0) {
-			String updateMS = "update magicstore set MagicStore_ID = '" + id + "', MagicStore_Password = '" + password + 
-							"', Company_Name = '" + name + "', Address = '" + address + "', Representative = '" + representative +
+			String updateMS = "update magicstore set MagicStore_ID = '" + id + "', MagicStore_Password = AES_ENCRYPT('" + password + "', '" + id + "'), " + 
+							"Company_Name = '" + name + "', Address = '" + address + "', Representative = '" + representative +
 							"', License_Class = '" + m_class + "', Money = '" + money + "' where MagicStore_ID = '" + keep_id + "';";
 			stmt.executeUpdate(updateMS);
 			if(!keep_id.equals(id)){

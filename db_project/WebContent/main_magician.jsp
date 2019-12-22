@@ -47,7 +47,7 @@ right: 10px;
 		<input type="button" value="창조 마법 확인" onclick="location.href='info_magic.jsp'">
 	</div>
 	<div>
-		<input type="button" value="창조 마법 거래내역 확인" onclick="location.href='register_material.jsp'">
+		<input type="button" value="창조 마법 거래내역 확인" onclick="location.href='search_trade_magic.jsp'">
 	</div>
 	<div>
 		<input type="button" value="회원 탈퇴" onclick="location.href='register_material.jsp'">

@@ -22,9 +22,9 @@
 			String jdbcDriver = "jdbc:mariadb://localhost:3306/project";
 			String dbUser = "root";
 			String dbPass = "maria12";
-			String selectMagician = "select Magician_ID, Magician_Password, Magician_Class, Magician_Attribute from magician;";
-			String selectMagicStore = "select MagicStore_ID, MagicStore_Password, License_Class from magicstore;";
-			String selectCustomer = "select Customer_ID, Customer_Password from customer;";
+			String selectMagician = "select Magician_ID, AES_DECRYPT(Magician_Password, Magician_ID), Magician_Class, Magician_Attribute from magician;";
+			String selectMagicStore = "select MagicStore_ID, AES_DECRYPT(MagicStore_Password, MagicStore_ID), License_Class from magicstore;";
+			String selectCustomer = "select Customer_ID, AES_DECRYPT(Customer_Password, Customer_ID) from customer;";
 
 			conn = DriverManager.getConnection(jdbcDriver, dbUser, dbPass);
 			stmt = conn.createStatement();
@@ -81,7 +81,6 @@
 		%>
 			<h1>이런</h1>
 			<p>올바르지 않은 정보입니다.
-			
 		<%
 		} catch (Exception e) {
 			e.printStackTrace();

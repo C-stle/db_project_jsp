@@ -134,7 +134,7 @@ right: 10px;
 				if(overlap_count == count) {
 					if(checkClass > 0) {
 						String updateMagician = "update magician set Magician_ID = '" + id + 
-								"', Magician_Password = '" + password + "', Magician_Name = '" + name + 
+								"', Magician_Password = AES_ENCRYPT('" + password + "', '" + id + "'), Magician_Name = '" + name + 
 								"', Age = '" + age + "', Species = '" + species + "', Country_Of_Origin = '" + country +
 								"', Job = '" + job + "', Magician_Class = '" + m_class + "', Magician_Attribute = '" + attribute +
 								"', Mana = '" + mana + "', Money = '" + money + "' where Magician_ID = '" + keep_id + "';";

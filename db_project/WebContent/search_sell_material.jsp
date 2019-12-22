@@ -71,7 +71,7 @@ function onBuyClicked(){
 	amount = document.getElementsByName("amount");
 	table = document.getElementById("table");
 	for(var i = 0;i<amount.length;i++){
-		if(amount[i].value=="0" || amount[i].value=="" || amount[i].value == null){
+		if(amount[i].value=="0" || amount[i].value == null){
 			
 		} else {
 			var addedFormDiv = document.getElementById("addedFormDiv");
@@ -157,7 +157,7 @@ try {
 	<%
 	while(resultMaterial.next()){
 		String ma_id = resultMaterial.getString(1);
-		String selectSellMT = "select Inventory_Volume from Material_Sell where MagicStore_ID = '" + keep_id + "' and Material_ID = '" + ma_id + "';";
+		String selectSellMT = "select Amount from Material_Sell where MagicStore_ID = '" + keep_id + "' and Material_ID = '" + ma_id + "';";
 		resultSellMT = stmt.executeQuery(selectSellMT);
 		%>
 		<script>count = count + 1;</script>
@@ -171,7 +171,7 @@ try {
 		
 		if(resultSellMT.next()){
 			%>
-			<td><input type="number" name="amount" id="<%=ma_id %>" value="<%=resultSellMT.getString(1) %>"></td>
+			<td><input type="number" name="amount" id="<%=ma_id %>" value="<%=resultSellMT.getString(1) %>" min="<%=resultSellMT.getString(1) %>"></td>
 			<%
 		} else {
 			%>
