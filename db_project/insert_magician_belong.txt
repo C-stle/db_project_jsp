@@ -1,0 +1,3 @@
+insert into magician_belong values('MA0001', 'SA0001');
+insert into magician_belong values('MA0002', 'SA0001');
+insert into magician_belong values('MA0003', 'SA0002');

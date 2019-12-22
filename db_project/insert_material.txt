@@ -1,0 +1,6 @@
+insert into material values('TA0001', 'Flame Herb', 'Korea', 'vegetability', 10);
+insert into material values('TA0002', 'Lighting Herb', 'Korea', 'vegetability', 20);
+insert into material values('TA0003', 'Wind Herb', 'Korea', 'vegetability', 10);
+insert into material values('TA0004', 'Flame Herb', 'Korea', 'vegetability', 10);
+insert into material values('TA0005', 'Earth Herb',  'Korea', 'vegetability', 10);
+insert into material values('TA0006', 'Water Herb', 'Korea', 'vegetability', 10);

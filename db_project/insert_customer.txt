@@ -1,0 +1,4 @@
+insert into customer values('CA0001', AES_ENCRYPT('0000', 'CA0001'), 'Choi Seong Hoon', 25, 'Korea', 'water', 10000);
+insert into customer values('CA0002', AES_ENCRYPT('0000', 'CA0002'), 'Kim Ji Hae', 22, 'Korea', 'flame', 8000);
+insert into customer values('CA0003', AES_ENCRYPT('0000', 'CA0003'), 'Choi Sun Ho', 21, 'Lodos', 'wind', 5000);
+insert into customer values('CA0004', AES_ENCRYPT('0000', 'CA0004'), 'Baek Yon Sei', 100, 'baersa', 'lighting', 1000000);

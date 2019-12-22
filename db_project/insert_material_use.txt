@@ -1,0 +1,4 @@
+insert into material_use values('A0001', 'TA0006', 1);
+insert into material_use values('A0002', 'TA0004', 1);
+insert into material_use values('A0003', 'TA0002', 1);
+insert into material_use values('A0004', 'TA0002', 1);

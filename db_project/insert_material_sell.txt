@@ -1,0 +1,5 @@
+insert into material_sell values('SA0001', 'TA0001', 100);
+insert into material_sell values('SA0002', 'TA0002', 100);
+insert into material_sell values('SA0003', 'TA0003', 100);
+insert into material_sell values('SA0002', 'TA0004', 100);
+insert into material_sell values('SA0001', 'TA0005', 100);

@@ -1,0 +1,5 @@
+insert into customer_account values('CA0001', 'SA0001');
+insert into customer_account values('CA0001', 'SA0002');
+insert into customer_account values('CA0002', 'SA0003');
+insert into customer_account values('CA0003', 'SA0001');
+insert into customer_account values('CA0004', 'SA0002');

@@ -1,0 +1,4 @@
+insert into magic values('A0001', 'water ball', 'make water ball', 1, 'water', 'attack', 10, 10, 100, 'MA0001');
+insert into magic values('A0002', 'fire ball', 'make fire ball', 1, 'flame', 'attack', 10, 10, 100, 'MA0002');
+insert into magic values('A0003', 'lighting bolt', 'make lighting bolt', 1, 'lighting', 'attack', 10, 10, 100, 'MA0003');
+insert into magic values('A0004', 'lighting ball', 'make lighting ball', 1, 'lighting', 'support', 10, 5, 50, 'MA0003');
